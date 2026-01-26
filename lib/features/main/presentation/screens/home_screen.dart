@@ -1,16 +1,10 @@
-import 'dart:math';
-
 import 'package:auto_route/auto_route.dart';
-import 'package:yinni_mobile/core/base/di/dependency_injection.dart';
 import 'package:yinni_mobile/core/extensions/string_extension.dart';
-import 'package:yinni_mobile/core/repositories/cache/image_cache_manager.dart';
 import 'package:yinni_mobile/features/main/presentation/blocs/home_cubit.dart';
 import 'package:yinni_mobile/features/main/presentation/view_models/home.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:double_tap_to_exit/double_tap_to_exit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shimmer/shimmer.dart';
 
 
 @RoutePage()
@@ -507,8 +501,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    final topPadding = MediaQuery.of(context).padding.top;
+    // final textTheme = Theme.of(context).textTheme;
+    // final topPadding = MediaQuery.of(context).padding.top;
 
     return BlocProvider<HomeCubit>(
       create: (context) => HomeCubit.create(context)..fetch(),
@@ -541,6 +535,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               } else if(state is ErrorHomeState) {
                                 home = state.errorHome;
                               }
+                              debugPrint("home = $home");
                               return Column(
                                 children: [
                                   // _buildPromoWidget(
