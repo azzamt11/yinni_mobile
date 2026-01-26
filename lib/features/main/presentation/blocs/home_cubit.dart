@@ -1,6 +1,6 @@
-import 'package:bin_mahfudz_mobile/core/base/di/dependency_injection.dart';
-import 'package:bin_mahfudz_mobile/features/main/domain/repository/home_repository.dart';
-import 'package:bin_mahfudz_mobile/features/main/presentation/view_models/home.dart';
+import 'package:yinni_mobile/core/base/di/dependency_injection.dart';
+import 'package:yinni_mobile/features/main/domain/repository/home_repository.dart';
+import 'package:yinni_mobile/features/main/presentation/view_models/home.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,9 +21,7 @@ class HomeCubit extends Cubit<HomeState> {
   Future<void> fetch() async {
     emit(LoadingHomeState(
       loadingHome: Home(
-        promo: null,
-        bankAccounts: [],
-        youtube: null,
+        products: null,
         loading: true,
         error: null
       )
@@ -40,9 +38,7 @@ class HomeCubit extends Cubit<HomeState> {
         debugPrint("PACKAGE BUG STEP 1 : response.code != 200 ==> response = $response, response?.message = ${response?.message}");
         emit(ErrorHomeState(
           errorHome: Home(
-            promo: null, 
-            bankAccounts: [],
-            youtube: null, 
+            products: null,
             loading: false, 
             error: response?.message,
           ),

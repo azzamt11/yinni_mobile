@@ -19,9 +19,9 @@ final class _$HomeService extends HomeService {
   final Type definitionType = HomeService;
 
   @override
-  Future<Response<HomeApiResponse>> fetch() {
+  Future<Response<productApiResponse>> fetch() {
     final Uri $url = Uri.parse('/home/all');
     final Request $request = Request('GET', $url, client.baseUrl);
-    return client.send<HomeApiResponse, HomeApiResponse>($request);
+    return client.send<productApiResponse, productApiResponse>($request);
   }
 }

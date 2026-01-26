@@ -1,7 +1,7 @@
-import 'package:bin_mahfudz_mobile/core/app.dart';
+import 'package:yinni_mobile/core/app.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:bin_mahfudz_mobile/core/base/di/dependency_injection.dart' as di;
+import 'package:yinni_mobile/core/base/di/dependency_injection.dart' as di;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

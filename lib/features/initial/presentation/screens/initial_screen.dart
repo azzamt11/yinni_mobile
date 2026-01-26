@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:bin_mahfudz_mobile/core/base/router/app_router.dart';
-import 'package:bin_mahfudz_mobile/features/initial/presentation/blocs/initial_cubit.dart';
+import 'package:yinni_mobile/core/base/router/app_router.dart';
+import 'package:yinni_mobile/features/initial/presentation/blocs/initial_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
@@ -166,7 +166,7 @@ class _InitialScreenState extends State<InitialScreen> {
                         height: min(constraints.maxWidth * 0.4, 400) * 0.45,
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: AssetImage('assets/features/initial/bin_mahfudz.png'),
+                            image: AssetImage('assets/features/initial/yinni_mobile.png'),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -208,7 +208,7 @@ class _InitialScreenState extends State<InitialScreen> {
                                           textAlign: TextAlign.center,
                                         ),
                                         Text(
-                                          "Bin Mahfudz Travel",
+                                          "Yinni Mobile Travel",
                                           style: textTheme.headlineLarge?.copyWith(color: const Color(0xFF2E9E39), height: 1.5),
                                           textAlign: TextAlign.center,
                                         ),
@@ -234,7 +234,7 @@ class _InitialScreenState extends State<InitialScreen> {
                                                 style: TextStyle(color: Colors.black),
                                               ),
                                               TextSpan(
-                                                text: "Bin Mahfudz Travel",
+                                                text: "Yinni Mobile Travel",
                                                 style: TextStyle(color: Color(0xFF2E9E39)),
                                               )
                                             ]

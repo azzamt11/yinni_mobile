@@ -1,11 +1,11 @@
-import 'package:bin_mahfudz_mobile/core/base/configs/configs.dart';
-import 'package:bin_mahfudz_mobile/core/repositories/cache/image_cache_manager.dart';
-import 'package:bin_mahfudz_mobile/core/repositories/network/service_manager.dart';
-import 'package:bin_mahfudz_mobile/core/repositories/network/utilities/json_converter.dart';
-import 'package:bin_mahfudz_mobile/features/auth/domain/usecase/auth_usecase.dart';
-import 'package:bin_mahfudz_mobile/features/main/data/models/home_api_response.dart';
-import 'package:bin_mahfudz_mobile/features/main/data/services/home_service.dart';
-import 'package:bin_mahfudz_mobile/features/main/domain/repository/home_repository.dart';
+import 'package:yinni_mobile/core/base/configs/configs.dart';
+import 'package:yinni_mobile/core/repositories/cache/image_cache_manager.dart';
+import 'package:yinni_mobile/core/repositories/network/service_manager.dart';
+import 'package:yinni_mobile/core/repositories/network/utilities/json_converter.dart';
+import 'package:yinni_mobile/features/auth/domain/usecase/auth_usecase.dart';
+import 'package:yinni_mobile/features/main/data/models/product_api_response.dart';
+import 'package:yinni_mobile/features/main/data/services/home_service.dart';
+import 'package:yinni_mobile/features/main/domain/repository/home_repository.dart';
 import 'package:chopper/chopper.dart';
 import 'package:get_it/get_it.dart';
 
@@ -27,7 +27,7 @@ extension GetItExtension on GetIt {
 Future<void> injectServices() async {
   injector.registerSingleton<Map<Type, JsonFactory>>(<Type, JsonFactory>{});
   injector.get<Map<Type, JsonFactory>>().addAll({
-    HomeApiResponse: HomeApiResponse.fromJsonFactory,
+    productApiResponse: productApiResponse.fromJsonFactory,
   });
   injector.registerLazySingleton<JsonModelConverter>(() => JsonModelConverter(
     injector.get(),

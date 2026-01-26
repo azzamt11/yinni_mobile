@@ -1,5 +1,5 @@
-import 'package:bin_mahfudz_mobile/core/base/configs/theme.dart';
-import 'package:bin_mahfudz_mobile/core/base/router/app_router.dart';
+import 'package:yinni_mobile/core/base/configs/theme.dart';
+import 'package:yinni_mobile/core/base/router/app_router.dart';
 import 'package:flutter/material.dart';
 
 

@@ -1,4 +1,4 @@
-import 'package:bin_mahfudz_mobile/features/main/data/models/home_api_response.dart';
+import 'package:yinni_mobile/features/main/data/models/product_api_response.dart';
 import 'package:chopper/chopper.dart';
 
 part 'home_service.chopper.dart';
@@ -8,6 +8,6 @@ abstract class HomeService extends ChopperService {
   static HomeService create([ChopperClient? client]) => _$HomeService(client);
 
   @Get(path: '/all')
-  Future<Response<HomeApiResponse>> fetch();
+  Future<Response<productApiResponse>> fetch();
 
 }

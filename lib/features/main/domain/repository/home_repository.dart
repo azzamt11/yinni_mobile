@@ -1,7 +1,7 @@
 
 
-import 'package:bin_mahfudz_mobile/features/main/data/models/home_api_response.dart';
-import 'package:bin_mahfudz_mobile/features/main/data/services/home_service.dart';
+import 'package:yinni_mobile/features/main/data/models/product_api_response.dart';
+import 'package:yinni_mobile/features/main/data/services/home_service.dart';
 
 class HomeRepository {
   HomeRepository(
@@ -11,8 +11,8 @@ class HomeRepository {
   //final HomeBox _homeBox;
 
 
-  Future<HomeApiResponse?> fetch({bool isRefresh = false}) async {
+  Future<productApiResponse?> fetch({bool isRefresh = false}) async {
     final response = await _homeService.fetch();
-    return HomeApiResponse.fromChopperResponse(response);
+    return productApiResponse.fromChopperResponse(response);
   }
 }

@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:bin_mahfudz_mobile/features/auth/domain/usecase/auth_usecase.dart';
+import 'package:yinni_mobile/features/auth/domain/usecase/auth_usecase.dart';
 import 'package:chopper/chopper.dart';
 
 class HeaderInterceptor implements Interceptor {
