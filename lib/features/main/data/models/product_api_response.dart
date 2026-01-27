@@ -12,9 +12,9 @@ part 'product_api_response.g.dart';
 class productApiResponse extends ApiResponse {
   productApiResponse(int code, this.data, String? message) : super(code: code, message: message);
 
-  final ProductData? data;
+  final List<ProductData>? data;
 
-  static productApiResponse empty = productApiResponse(400, ProductData.empty, null);
+  static productApiResponse empty = productApiResponse(400, [], null);
   static productApiResponse fromChopperResponse(Response<productApiResponse> r)
     => productApiResponse(max(r.statusCode, r.bodyNotNull.code), r.bodyNotNull.data, r.bodyNotNull.message);
 

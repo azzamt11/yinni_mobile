@@ -29,20 +29,20 @@ class HomeCubit extends Cubit<HomeState> {
     await Future.delayed(const Duration(seconds: 5));
     //try {
       final response = await _homeRepository.fetch();
-      if(response?.code == 200) {
+      if(response.code == 200) {
         debugPrint("PACKAGE BUG STEP 0 : response.code == 200 ==> response = $response");
         emit(LoadedHomeState(
           home: Home.fromHomeApiResponse(response)
         ));
       } else {
-        debugPrint("PACKAGE BUG STEP 1 : response.code != 200 ==> response = $response, response?.message = ${response?.message}");
+        debugPrint("PACKAGE BUG STEP 1 : response.code != 200 ==> response = $response, response?.message = ${response.message}");
         emit(ErrorHomeState(
           errorHome: Home(
             products: null,
             loading: false, 
-            error: response?.message,
+            error: response.message,
           ),
-          offline: response?.message.toString().toLowerCase().contains("socket")
+          offline: response.message.toString().toLowerCase().contains("socket")
         ));
       }
     // } catch(e) {

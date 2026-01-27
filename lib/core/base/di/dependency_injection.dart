@@ -1,4 +1,5 @@
 import 'package:yinni_mobile/core/base/configs/configs.dart';
+import 'package:yinni_mobile/core/repositories/cache/database/app_database.dart';
 import 'package:yinni_mobile/core/repositories/cache/image_cache_manager.dart';
 import 'package:yinni_mobile/core/repositories/network/service_manager.dart';
 import 'package:yinni_mobile/core/repositories/network/utilities/json_converter.dart';
@@ -32,6 +33,7 @@ Future<void> injectServices() async {
   injector.registerLazySingleton<JsonModelConverter>(() => JsonModelConverter(
     injector.get(),
   ));
+  
   injector.registerLazySingleton<ImageUrlCacheManager>(() => ImageUrlCacheManager.create());
   injector.registerLazySingleton<AuthUsecase>(() => AuthUsecase());
   injector.registerSingleton<List<ChopperService>>(<ChopperService>[], instanceName: namedService);
@@ -48,6 +50,6 @@ Future<void> injectServices() async {
 
   injector.registerLazySingleton<HomeRepository>(() => HomeRepository(
     injector.get<HomeService>(),
-    //injector.get<HomeBox>(),
+    injector.get<AppDatabase>(),
   ));
 }

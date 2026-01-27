@@ -9,9 +9,9 @@ part of 'product_api_response.dart';
 productApiResponse _$productApiResponseFromJson(Map<String, dynamic> json) =>
     productApiResponse(
       (json['code'] as num).toInt(),
-      json['data'] == null
-          ? null
-          : ProductData.fromJson(json['data'] as Map<String, dynamic>),
+      (json['data'] as List<dynamic>?)
+          ?.map((e) => ProductData.fromJson(e as Map<String, dynamic>))
+          .toList(),
       json['message'] as String?,
     );
 
@@ -19,5 +19,5 @@ Map<String, dynamic> _$productApiResponseToJson(productApiResponse instance) =>
     <String, dynamic>{
       'message': instance.message,
       'code': instance.code,
-      'data': instance.data?.toJson(),
+      'data': instance.data?.map((e) => e.toJson()).toList(),
     };
