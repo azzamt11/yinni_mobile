@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:yinni_mobile/features/main/data/models/product_api_response.dart';
 import 'package:yinni_mobile/features/main/data/services/home_service.dart';
 import 'package:yinni_mobile/core/repositories/cache/database/app_database.dart';
@@ -20,7 +21,7 @@ class HomeRepository {
         return apiResponse;
       }
     } catch (e) {
-      // Log error if necessary
+      debugPrint("HomeRepository fetch error: $e");
     }
 
     final cachedProducts = await _db.getAllProducts();

@@ -537,23 +537,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               }
                               debugPrint("home = $home");
                               return Column(
-                                children: [
-                                  // _buildPromoWidget(
-                                  //   textTheme, 
-                                  //   constraints,
-                                  //   data: home?.promo,
-                                  //   bankAccounts: home?.bankAccounts, 
-                                  //   loading: home?.loading, 
-                                  //   error: home?.error
-                                  // ),
-                                  // _buildYoutubeWidget(
-                                  //   context,
-                                  //   textTheme,
-                                  //   data: home?.youtube,
-                                  //   loading: home?.loading,
-                                  //   error: home?.error
-                                  // ),
-                                ],
+                                children: home?.products?.map((e) => Text(e.title)).toList() ?? [],
                               );
                             }
                           )

@@ -42,11 +42,12 @@ Future<void> injectServices() async {
   injector.registerLazySingleton<ServiceManager>(() => ServiceManager.create(
     Configs.baseUrl,
     injector.get<JsonModelConverter>(),
-    injector.get<List<ChopperService>>(instanceName: namedService),
     injector.get<AuthUsecase>(),
   ));
 
-  injector.get<ServiceManager>();
+  final sm = injector.get<ServiceManager>();
+  injector.registerSingleton<HomeService>(HomeService.create(sm.productClient));
+  //injector.registerSingleton<AuthService>(AuthService.create(sm.authClient));
 
   injector.registerLazySingleton<HomeRepository>(() => HomeRepository(
     injector.get<HomeService>(),

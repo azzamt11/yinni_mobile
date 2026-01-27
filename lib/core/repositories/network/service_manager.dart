@@ -8,28 +8,31 @@ class ServiceManager {
   ServiceManager._(
     String baseUrl,
     JsonModelConverter converter,
-    List<ChopperService> services,
     AuthUsecase authUsecase,
   ) {
-    client = ChopperClient(
-      baseUrl: Uri.parse(baseUrl),
+    // Helper to create a client for a specific port
+    ChopperClient createClient(String port) => ChopperClient(
+      baseUrl: Uri.parse("$baseUrl:$port"),
       interceptors: [
-        HeaderInterceptor(authUsecase),
+        HeaderInterceptor(authUsecase), 
         ServiceLoggingInterceptor()
       ],
       converter: converter,
       errorConverter: converter,
-      services: services,
     );
+
+    authClient = createClient('8000');
+    productClient = createClient('8002');
+    promptClient = createClient('8003');
   }
+
+  late final ChopperClient authClient;
+  late final ChopperClient productClient;
+  late final ChopperClient promptClient;
 
   static ServiceManager create(
     String baseUrl,
     JsonModelConverter converter,
-    List<ChopperService> services,
     AuthUsecase authUsecase,
-  ) =>
-      ServiceManager._(baseUrl, converter, services, authUsecase);
-
-  late final ChopperClient client;
+  ) => ServiceManager._(baseUrl, converter, authUsecase);
 }
