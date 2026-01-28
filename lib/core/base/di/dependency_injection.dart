@@ -1,6 +1,6 @@
 import 'package:yinni_mobile/core/base/configs/configs.dart';
 import 'package:yinni_mobile/core/repositories/cache/database/app_database.dart';
-import 'package:yinni_mobile/core/repositories/cache/image_cache_manager.dart';
+import 'package:yinni_mobile/core/repositories/cache/volume/image_cache_manager.dart';
 import 'package:yinni_mobile/core/repositories/network/service_manager.dart';
 import 'package:yinni_mobile/core/repositories/network/utilities/json_converter.dart';
 import 'package:yinni_mobile/features/auth/domain/usecase/auth_usecase.dart';
@@ -28,7 +28,7 @@ extension GetItExtension on GetIt {
 Future<void> injectServices() async {
   injector.registerSingleton<Map<Type, JsonFactory>>(<Type, JsonFactory>{});
   injector.get<Map<Type, JsonFactory>>().addAll({
-    productApiResponse: productApiResponse.fromJsonFactory,
+    ProductApiResponse: ProductApiResponse.fromJsonFactory,
   });
   injector.registerLazySingleton<JsonModelConverter>(() => JsonModelConverter(
     injector.get(),

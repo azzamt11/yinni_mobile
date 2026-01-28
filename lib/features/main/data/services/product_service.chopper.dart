@@ -19,9 +19,9 @@ final class _$ProductService extends ProductService {
   final Type definitionType = ProductService;
 
   @override
-  Future<Response<productApiResponse>> fetch() {
+  Future<Response<ProductApiResponse>> fetch() {
     final Uri $url = Uri.parse('/home/v1/products');
     final Request $request = Request('GET', $url, client.baseUrl);
-    return client.send<productApiResponse, productApiResponse>($request);
+    return client.send<ProductApiResponse, ProductApiResponse>($request);
   }
 }

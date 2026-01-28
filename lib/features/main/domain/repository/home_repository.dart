@@ -10,10 +10,10 @@ class HomeRepository {
   final ProductService _productService;
   final AppDatabase _db;
 
-  Future<productApiResponse> fetch({bool isRefresh = false}) async {
+  Future<ProductApiResponse> fetch({bool isRefresh = false}) async {
     try {
       final response = await _productService.fetch();
-      final apiResponse = productApiResponse.fromChopperResponse(response);
+      final apiResponse = ProductApiResponse.fromChopperResponse(response);
 
       // 1. If network is successful, update the cache
       if (response.isSuccessful && apiResponse.data != null) {
@@ -27,10 +27,10 @@ class HomeRepository {
     final cachedProducts = await _db.getAllProducts();
     
     if (cachedProducts.isNotEmpty) {
-      return productApiResponse(200, cachedProducts, "Loaded from cache");
+      return ProductApiResponse(200, cachedProducts, "Loaded from cache");
     }
 
-    return productApiResponse.empty;
+    return ProductApiResponse.empty;
   }
 
   Stream<List<ProductData>> watchProducts() {

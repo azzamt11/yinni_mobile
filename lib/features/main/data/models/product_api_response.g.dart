@@ -6,8 +6,8 @@ part of 'product_api_response.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-productApiResponse _$productApiResponseFromJson(Map<String, dynamic> json) =>
-    productApiResponse(
+ProductApiResponse _$ProductApiResponseFromJson(Map<String, dynamic> json) =>
+    ProductApiResponse(
       (json['code'] as num).toInt(),
       (json['data'] as List<dynamic>?)
           ?.map((e) => ProductData.fromJson(e as Map<String, dynamic>))
@@ -15,7 +15,7 @@ productApiResponse _$productApiResponseFromJson(Map<String, dynamic> json) =>
       json['message'] as String?,
     );
 
-Map<String, dynamic> _$productApiResponseToJson(productApiResponse instance) =>
+Map<String, dynamic> _$ProductApiResponseToJson(ProductApiResponse instance) =>
     <String, dynamic>{
       'message': instance.message,
       'code': instance.code,

@@ -7,6 +7,6 @@ part 'product_service.chopper.dart';
 abstract class ProductService extends ChopperService {
   static ProductService create([ChopperClient? client]) => _$ProductService(client);
   @Get(path: '/v1/products')
-  Future<Response<productApiResponse>> fetch();
+  Future<Response<ProductApiResponse>> fetch();
 
 }
