@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; background: #f0f0f0; padding: 20px; }
+        #svg-grid { background: white; border: 1px solid #ccc; cursor: crosshair; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .controls { margin-bottom: 15px; background: white; padding: 10px; border-radius: 8px; }
+        .grid-line { stroke: rgba(200, 200, 200, 0.3); stroke-width: 1; pointer-events: none; }
+        .axis-line { stroke: rgba(150, 150, 150, 0.5); stroke-width: 2; pointer-events: none; }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <label>Upload Image to Trace: </label>
+        <input type="file" id="imageInput" accept="image/*">
+    </div>
+    
+    <svg id="svg-grid" width="400" height="600" viewBox="0 0 400 600">
+        <!-- Image Layer (Bottom) -->
+        <image id="traceImage" x="0" y="0" width="400" height="600" preserveAspectRatio="xMidYMid slice" />
+
+        <!-- Grid Layer (Middle) -->
+        <g id="gridLines"></g>
+        
+        <!-- Interaction Layer (Top) -->
+        <path id="tracePath" fill="none" stroke="blue" stroke-width="2" />
+        <g id="points"></g>
+    </svg>
+
+    <div style="margin-top:10px;">Coordinates: <span id="output">(0, 0)</span></div>
+
+    <script>
+        const svg = document.getElementById('svg-grid');
+        const imgInput = document.getElementById('imageInput');
+        const traceImage = document.getElementById('traceImage');
+        const gridGroup = document.getElementById('gridLines');
+        const output = document.getElementById('output');
+        const spacing = 10;
+
+        // 1. Load Local Image
+        imgInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                traceImage.setAttribute('href', URL.createObjectURL(file));
+            }
+        });
+
+        // 2. Generate Grid
+        for (let i = 0; i <= 400; i += spacing) {
+            const lineClass = i % 50 === 0 ? 'axis-line' : 'grid-line';
+            gridGroup.innerHTML += `<line x1="${i}" y1="0" x2="${i}" y2="600" class="${lineClass}" />`;
+        }
+        for (let i = 0; i <= 600; i += spacing) {
+            const lineClass = i % 50 === 0 ? 'axis-line' : 'grid-line';
+            gridGroup.innerHTML += `<line x1="0" y1="${i}" x2="400" y2="${i}" class="${lineClass}" />`;
+        }
+
+        // 3. Handle Clicks & Point Tracking
+        svg.addEventListener('click', (event) => {
+            const pt = svg.createSVGPoint();
+            pt.x = event.clientX;
+            pt.y = event.clientY;
+            const cursor = pt.matrixTransform(svg.getScreenCTM().inverse());
+            
+            const x = Math.round(cursor.x / spacing) * spacing;
+            const y = Math.round(cursor.y / spacing) * spacing;
+
+            output.textContent = `(${x}, ${y})`;
+            
+            // Add a marker point
+            const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            dot.setAttribute("cx", x);
+            dot.setAttribute("cy", y);
+            dot.setAttribute("r", "3");
+            dot.setAttribute("fill", "red");
+            document.getElementById('points').appendChild(dot);
+        });
+    </script>
+</body>
+</html>
