@@ -5,31 +5,10 @@ import 'package:drift/native.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:yinni_mobile/features/main/data/models/product_data.dart';
-import 'package:yinni_mobile/features/main/data/models/product_details.dart';
 
 part 'app_database.g.dart';
 
 // --- TYPE CONVERTERS ---
-
-// Converts ProductDetails object to/from JSON String for SQL storage
-class ProductDetailsConverter extends TypeConverter<ProductDetails, String> {
-  const ProductDetailsConverter();
-  @override
-  ProductDetails fromSql(String fromDb) => ProductDetails.fromJson(json.decode(fromDb));
-  @override
-  String toSql(ProductDetails value) => json.encode(value.toJson());
-}
-
-// Converts List<String> to/from JSON String for SQL storage
-class StringListConverter extends TypeConverter<List<String>, String> {
-  const StringListConverter();
-  @override
-  List<String> fromSql(String fromDb) => (json.decode(fromDb) as List).cast<String>();
-  @override
-  String toSql(List<String> value) => json.encode(value);
-}
-
-// Converts ProductData object to/from JSON String for SQL storage
 class ProductDataConverter extends TypeConverter<ProductData, String> {
   const ProductDataConverter();
   @override
@@ -49,15 +28,27 @@ class Products extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+@DataClassName('AuthTokenEntity')
+class AuthTokens extends Table {
+  TextColumn get key => text()();
+  TextColumn get value => text()();
+
+  @override
+  Set<Column> get primaryKey => {key};
+}
+
 // --- DATABASE CLASS ---
 
-@DriftDatabase(tables: [Products])
+@DriftDatabase(tables: [Products, AuthTokens])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
   int get schemaVersion => 1;
 
+  // ---------------------------------------------------------------------------
+  // PRODUCT SERVICE LOGIC
+  // ---------------------------------------------------------------------------
   Future<void> saveProducts(List<ProductData> items) async {
     await batch((batch) {
       batch.insertAllOnConflictUpdate(
@@ -74,6 +65,27 @@ class AppDatabase extends _$AppDatabase {
     final result = await select(products).get();
     return result.map((row) => row.data).toList();
   }
+
+  // ---------------------------------------------------------------------------
+  // AUTH SERVICE LOGIC
+  // ---------------------------------------------------------------------------
+  
+  /// Saves a token (updates if exists)
+  Future<void> saveToken(String key, String value) async {
+    await into(authTokens).insertOnConflictUpdate(
+      AuthTokenEntity(key: key, value: value),
+    );
+  }
+
+  /// Retrieves a token by key
+  Future<String?> getToken(String key) async {
+    final query = select(authTokens)..where((t) => t.key.equals(key));
+    final row = await query.getSingleOrNull();
+    return row?.value;
+  }
+
+  /// Clears all tokens (Logout)
+  Future<void> clearAuth() => delete(authTokens).go();
 }
 
 LazyDatabase _openConnection() {

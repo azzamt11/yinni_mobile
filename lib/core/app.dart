@@ -10,23 +10,13 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     final appRouter = AppRouter();
 
-    return /*MultiBlocProvider(
-      providers: [
-        BlocProvider<MainBloc>(
-          create: (context) => MainBloc(
-              di.sl<AuthRepository>(),
-              PageController(),
-          ),
-        ),
-      ],
-      child: */ SafeArea(
-        top: false,
-        child: MaterialApp.router(
-          routerConfig: appRouter.config(),
-          theme: buildTheme(),
-          debugShowCheckedModeBanner: false,
-        )
-      );
-    //);
+    return SafeArea(
+      top: false,
+      child: MaterialApp.router(
+        routerConfig: appRouter.config(),
+        theme: buildTheme(),
+        debugShowCheckedModeBanner: false,
+      )
+    );
   }
 }

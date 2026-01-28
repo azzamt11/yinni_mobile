@@ -23,7 +23,7 @@ class HomeCubit extends Cubit<HomeState> {
       loadingProducts: [],
     ));
     await Future.delayed(const Duration(seconds: 5));
-    //try {
+    try {
       final response = await _homeRepository.fetch();
       if(response.code == 200) {
         debugPrint("PACKAGE BUG STEP 0 : response.code == 200 ==> response = $response");
@@ -37,17 +37,12 @@ class HomeCubit extends Cubit<HomeState> {
           offline: response.message.toString().toLowerCase().contains("socket")
         ));
       }
-    // } catch(e) {
-    //   emit(ErrorHomeState(
-    //     errorHome: Home(
-    //       promo: null, 
-    //       youtube: null, 
-    //       loading: false,
-    //       error: e.toString()
-    //     ),
-    //     offline: e.toString().toLowerCase().contains("socket")
-    //   ));
-    // }
+    } catch(e) {
+      emit(ErrorHomeState(
+        errorProducts: [],
+        offline: e.toString().toLowerCase().contains("socket")
+      ));
+    }
   }
   
   Future<void> reload({Duration? delay}) async {

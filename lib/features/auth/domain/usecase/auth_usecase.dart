@@ -1,12 +1,16 @@
 import 'dart:async';
 import 'package:chopper/chopper.dart';
+import 'package:yinni_mobile/core/repositories/cache/database/app_database.dart';
 
 class AuthUsecase {
+  final AppDatabase _db;
   String? _cachedToken;
+
+  AuthUsecase(this._db);
 
   Future<void> initializeToken() async {
     try {
-      _cachedToken = /*await AuthHelper.getToken();*/ "---";
+      _cachedToken = await _db.getToken('access_token');
     } catch (e) {
       _cachedToken = null;
     }
@@ -14,12 +18,22 @@ class AuthUsecase {
 
   String? get cachedToken => _cachedToken;
 
+  Future<void> setToken(String token) async {
+    await _db.saveToken('access_token', token);
+    _cachedToken = token;
+  }
+
+  Future<void> clearToken() async {
+    await _db.clearAuth();
+    _cachedToken = null;
+  }
+
   FutureOr<Request> addAuthHeaderInterceptor(Request request) async {
-    if(_cachedToken == null) {
+    if (_cachedToken == null) {
       await initializeToken();
     }
 
-    if(_cachedToken != null) {
+    if (_cachedToken != null) {
       request = request.copyWith(
         headers: {
           ...request.headers,

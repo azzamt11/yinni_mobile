@@ -18,10 +18,5 @@ class AppRouter extends RootStackRouter {
         page: HomeRoute.page,
         path: '/home',
       ),
-
-      //AutoRoute(
-        //page: MainRoute.page,
-        //path: '/main',
-      //),
   ];
 }
