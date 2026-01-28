@@ -13,7 +13,17 @@
 
     <div>
         <h3>Input Commands</h3>
-        <textarea id="input" oninput="render()">
+        <textarea id="input" oninput="render()" style="
+                text-align:left;
+                background:#111;
+                color:#00aaff;
+                padding:12px;
+                border-radius:8px;
+                max-height:400px;
+                overflow:auto;
+                font-family:monospace;
+                font-size:12px;
+            ">
 Move(70, 240)
 Line(210, 110)
 Line(300, 120)
@@ -35,8 +45,29 @@ Line(200, 280)</textarea>
         <h3>SVG Preview</h3>
         <div id="svgContainer"></div>
     </div>
+    <div class="preview">
+    <h3>SVG Code</h3>
+        <pre id="svgCode"
+            style="
+                text-align:left;
+                background:#111;
+                color:#0f0;
+                padding:12px;
+                border-radius:8px;
+                max-height:400px;
+                overflow:auto;
+                font-family:monospace;
+                font-size:12px;
+            ">
+        </pre>
+    </div>
+
 
 <script>
+    const getRawArg = (line) => {
+        const m = line.match(/\(([^)]*)\)/);
+        return m ? m[1].trim() : null;
+    };
 function render() {
     const text = document.getElementById('input').value;
     const lines = text.split('\n');
@@ -47,6 +78,7 @@ function render() {
     let strokeWidth = 2;
     let strokeLinecap = "butt";
     let strokeLinejoin = "miter";
+    let fill = "none";
 
     let svgWidth = 400;
     let svgHeight = 400;
@@ -54,13 +86,14 @@ function render() {
     const flushPath = () => {
         if (currentPath.trim() !== "") {
             svgInner += `
-                <path 
+                <path
                     d="${currentPath}"
                     stroke="${color}"
                     stroke-width="${strokeWidth}"
                     stroke-linecap="${strokeLinecap}"
                     stroke-linejoin="${strokeLinejoin}"
-                    fill="none"
+                    fill="${fill}"
+                    fill-rule="evenodd"
                 />
             `;
             currentPath = "";
@@ -89,15 +122,21 @@ function render() {
         }
         else if (cmd === "Color") {
             flushPath();
-            color = "#" + parts[1];
+            const value = getRawArg(line);
+            color = "#" + value;
+        }
+        else if (cmd === "Fill") {
+            flushPath();
+            const value = getRawArg(line);
+            fill = value === "none" ? "none" : "#" + value;
         }
         else if (cmd === "StrokeLinecap") {
             flushPath();
-            strokeLinecap = parts[1]; // butt | round | square
+            strokeLinecap = getRawArg(line);
         }
         else if (cmd === "StrokeLinejoin") {
             flushPath();
-            strokeLinejoin = parts[1]; // miter | round | bevel
+            strokeLinejoin = getRawArg(line);
         }
         else if (cmd === "Width") {
             svgWidth = vals[0];
@@ -122,7 +161,8 @@ function render() {
             const cy = numbers[1];
 
             const r = args.radius ? Number(args.radius) : 2;
-            const fill = args.color ? "#" + args.color : color;
+            const color = args.color ? "#" + args.color : "#111111";
+            const fill = args.fill ? "#" + args.fill : "none";
             const strokeW = args.width ? Number(args.width) : strokeWidth;
 
             svgInner += `
@@ -131,7 +171,7 @@ function render() {
                     cy="${cy}" 
                     r="${r}"
                     fill="${fill}"
-                    stroke="${fill}"
+                    stroke="${color}"
                     stroke-width="${strokeW}"
                 />
             `;
@@ -139,8 +179,14 @@ function render() {
     });
 
     flushPath();
-    document.getElementById('svgContainer').innerHTML = 
-        `<svg width="${svgWidth}" height="${svgHeight}" viewBox="0 0 ${svgWidth} ${svgHeight}">${svgInner}</svg>`;
+    const svgCode = `
+        <svg width="${svgWidth}" height="${svgHeight}" viewBox="0 0 ${svgWidth} ${svgHeight}">
+        ${svgInner}
+        </svg>
+        `.trim();
+
+    document.getElementById('svgContainer').innerHTML = svgCode;
+    document.getElementById('svgCode').textContent = svgCode;
 }
 
 render(); // Initial draw
