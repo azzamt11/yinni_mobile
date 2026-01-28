@@ -1,7 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format width=80
 
-part of 'home_service.dart';
+part of 'product_service.dart';
 
 // **************************************************************************
 // ChopperGenerator
@@ -9,18 +9,18 @@ part of 'home_service.dart';
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
-final class _$HomeService extends HomeService {
-  _$HomeService([ChopperClient? client]) {
+final class _$ProductService extends ProductService {
+  _$ProductService([ChopperClient? client]) {
     if (client == null) return;
     this.client = client;
   }
 
   @override
-  final Type definitionType = HomeService;
+  final Type definitionType = ProductService;
 
   @override
   Future<Response<productApiResponse>> fetch() {
-    final Uri $url = Uri.parse('/home/all');
+    final Uri $url = Uri.parse('/home/v1/products');
     final Request $request = Request('GET', $url, client.baseUrl);
     return client.send<productApiResponse, productApiResponse>($request);
   }

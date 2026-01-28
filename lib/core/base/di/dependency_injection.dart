@@ -5,7 +5,7 @@ import 'package:yinni_mobile/core/repositories/network/service_manager.dart';
 import 'package:yinni_mobile/core/repositories/network/utilities/json_converter.dart';
 import 'package:yinni_mobile/features/auth/domain/usecase/auth_usecase.dart';
 import 'package:yinni_mobile/features/main/data/models/product_api_response.dart';
-import 'package:yinni_mobile/features/main/data/services/home_service.dart';
+import 'package:yinni_mobile/features/main/data/services/product_service.dart';
 import 'package:yinni_mobile/features/main/domain/repository/home_repository.dart';
 import 'package:chopper/chopper.dart';
 import 'package:get_it/get_it.dart';
@@ -37,7 +37,7 @@ Future<void> injectServices() async {
   injector.registerLazySingleton<ImageUrlCacheManager>(() => ImageUrlCacheManager.create());
   injector.registerLazySingleton<AuthUsecase>(() => AuthUsecase());
   injector.registerSingleton<List<ChopperService>>(<ChopperService>[], instanceName: namedService);
-  injector.registerService(HomeService.create);
+  injector.registerService(ProductService.create);
 
   injector.registerLazySingleton<ServiceManager>(() => ServiceManager.create(
     Configs.baseUrl,
@@ -46,11 +46,11 @@ Future<void> injectServices() async {
   ));
 
   final sm = injector.get<ServiceManager>();
-  injector.registerSingleton<HomeService>(HomeService.create(sm.productClient));
+  injector.registerSingleton<ProductService>(ProductService.create(sm.productClient));
   //injector.registerSingleton<AuthService>(AuthService.create(sm.authClient));
 
   injector.registerLazySingleton<HomeRepository>(() => HomeRepository(
-    injector.get<HomeService>(),
+    injector.get<ProductService>(),
     injector.get<AppDatabase>(),
   ));
 }

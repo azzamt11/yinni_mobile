@@ -6,15 +6,15 @@ abstract class HomeState with _$HomeState {
   const factory HomeState.initial() = InitialHomeState;
 
   const factory HomeState.loading({
-    required Home? loadingHome
+    required List<ProductData>? loadingProducts
   }) = LoadingHomeState;
 
   const factory HomeState.loaded({
-    required Home? home
+    required List<ProductData>? products
   }) = LoadedHomeState;
 
   const factory HomeState.error({
-    required Home? errorHome,
+    required List<ProductData>? errorProducts,
     required bool? offline
   }) = ErrorHomeState;
   

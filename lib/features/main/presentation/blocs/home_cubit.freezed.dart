@@ -134,13 +134,13 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function( Home? loadingHome)?  loading,TResult Function( Home? home)?  loaded,TResult Function( Home? errorHome,  bool? offline)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function( List<ProductData>? loadingProducts)?  loading,TResult Function( List<ProductData>? products)?  loaded,TResult Function( List<ProductData>? errorProducts,  bool? offline)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case InitialHomeState() when initial != null:
 return initial();case LoadingHomeState() when loading != null:
-return loading(_that.loadingHome);case LoadedHomeState() when loaded != null:
-return loaded(_that.home);case ErrorHomeState() when error != null:
-return error(_that.errorHome,_that.offline);case _:
+return loading(_that.loadingProducts);case LoadedHomeState() when loaded != null:
+return loaded(_that.products);case ErrorHomeState() when error != null:
+return error(_that.errorProducts,_that.offline);case _:
   return orElse();
 
 }
@@ -158,13 +158,13 @@ return error(_that.errorHome,_that.offline);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function( Home? loadingHome)  loading,required TResult Function( Home? home)  loaded,required TResult Function( Home? errorHome,  bool? offline)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function( List<ProductData>? loadingProducts)  loading,required TResult Function( List<ProductData>? products)  loaded,required TResult Function( List<ProductData>? errorProducts,  bool? offline)  error,}) {final _that = this;
 switch (_that) {
 case InitialHomeState():
 return initial();case LoadingHomeState():
-return loading(_that.loadingHome);case LoadedHomeState():
-return loaded(_that.home);case ErrorHomeState():
-return error(_that.errorHome,_that.offline);case _:
+return loading(_that.loadingProducts);case LoadedHomeState():
+return loaded(_that.products);case ErrorHomeState():
+return error(_that.errorProducts,_that.offline);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -181,13 +181,13 @@ return error(_that.errorHome,_that.offline);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function( Home? loadingHome)?  loading,TResult? Function( Home? home)?  loaded,TResult? Function( Home? errorHome,  bool? offline)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function( List<ProductData>? loadingProducts)?  loading,TResult? Function( List<ProductData>? products)?  loaded,TResult? Function( List<ProductData>? errorProducts,  bool? offline)?  error,}) {final _that = this;
 switch (_that) {
 case InitialHomeState() when initial != null:
 return initial();case LoadingHomeState() when loading != null:
-return loading(_that.loadingHome);case LoadedHomeState() when loaded != null:
-return loaded(_that.home);case ErrorHomeState() when error != null:
-return error(_that.errorHome,_that.offline);case _:
+return loading(_that.loadingProducts);case LoadedHomeState() when loaded != null:
+return loaded(_that.products);case ErrorHomeState() when error != null:
+return error(_that.errorProducts,_that.offline);case _:
   return null;
 
 }
@@ -237,10 +237,18 @@ String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
 
 
 class LoadingHomeState with DiagnosticableTreeMixin implements HomeState {
-  const LoadingHomeState({required this.loadingHome});
+  const LoadingHomeState({required final  List<ProductData>? loadingProducts}): _loadingProducts = loadingProducts;
   
 
- final  Home? loadingHome;
+ final  List<ProductData>? _loadingProducts;
+ List<ProductData>? get loadingProducts {
+  final value = _loadingProducts;
+  if (value == null) return null;
+  if (_loadingProducts is EqualUnmodifiableListView) return _loadingProducts;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
@@ -253,21 +261,21 @@ $LoadingHomeStateCopyWith<LoadingHomeState> get copyWith => _$LoadingHomeStateCo
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'HomeState.loading'))
-    ..add(DiagnosticsProperty('loadingHome', loadingHome));
+    ..add(DiagnosticsProperty('loadingProducts', loadingProducts));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadingHomeState&&(identical(other.loadingHome, loadingHome) || other.loadingHome == loadingHome));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadingHomeState&&const DeepCollectionEquality().equals(other._loadingProducts, _loadingProducts));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,loadingHome);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_loadingProducts));
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'HomeState.loading(loadingHome: $loadingHome)';
+  return 'HomeState.loading(loadingProducts: $loadingProducts)';
 }
 
 
@@ -278,7 +286,7 @@ abstract mixin class $LoadingHomeStateCopyWith<$Res> implements $HomeStateCopyWi
   factory $LoadingHomeStateCopyWith(LoadingHomeState value, $Res Function(LoadingHomeState) _then) = _$LoadingHomeStateCopyWithImpl;
 @useResult
 $Res call({
- Home? loadingHome
+ List<ProductData>? loadingProducts
 });
 
 
@@ -295,10 +303,10 @@ class _$LoadingHomeStateCopyWithImpl<$Res>
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? loadingHome = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? loadingProducts = freezed,}) {
   return _then(LoadingHomeState(
-loadingHome: freezed == loadingHome ? _self.loadingHome : loadingHome // ignore: cast_nullable_to_non_nullable
-as Home?,
+loadingProducts: freezed == loadingProducts ? _self._loadingProducts : loadingProducts // ignore: cast_nullable_to_non_nullable
+as List<ProductData>?,
   ));
 }
 
@@ -309,10 +317,18 @@ as Home?,
 
 
 class LoadedHomeState with DiagnosticableTreeMixin implements HomeState {
-  const LoadedHomeState({required this.home});
+  const LoadedHomeState({required final  List<ProductData>? products}): _products = products;
   
 
- final  Home? home;
+ final  List<ProductData>? _products;
+ List<ProductData>? get products {
+  final value = _products;
+  if (value == null) return null;
+  if (_products is EqualUnmodifiableListView) return _products;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
@@ -325,21 +341,21 @@ $LoadedHomeStateCopyWith<LoadedHomeState> get copyWith => _$LoadedHomeStateCopyW
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'HomeState.loaded'))
-    ..add(DiagnosticsProperty('home', home));
+    ..add(DiagnosticsProperty('products', products));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadedHomeState&&(identical(other.home, home) || other.home == home));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadedHomeState&&const DeepCollectionEquality().equals(other._products, _products));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,home);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_products));
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'HomeState.loaded(home: $home)';
+  return 'HomeState.loaded(products: $products)';
 }
 
 
@@ -350,7 +366,7 @@ abstract mixin class $LoadedHomeStateCopyWith<$Res> implements $HomeStateCopyWit
   factory $LoadedHomeStateCopyWith(LoadedHomeState value, $Res Function(LoadedHomeState) _then) = _$LoadedHomeStateCopyWithImpl;
 @useResult
 $Res call({
- Home? home
+ List<ProductData>? products
 });
 
 
@@ -367,10 +383,10 @@ class _$LoadedHomeStateCopyWithImpl<$Res>
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? home = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? products = freezed,}) {
   return _then(LoadedHomeState(
-home: freezed == home ? _self.home : home // ignore: cast_nullable_to_non_nullable
-as Home?,
+products: freezed == products ? _self._products : products // ignore: cast_nullable_to_non_nullable
+as List<ProductData>?,
   ));
 }
 
@@ -381,10 +397,18 @@ as Home?,
 
 
 class ErrorHomeState with DiagnosticableTreeMixin implements HomeState {
-  const ErrorHomeState({required this.errorHome, required this.offline});
+  const ErrorHomeState({required final  List<ProductData>? errorProducts, required this.offline}): _errorProducts = errorProducts;
   
 
- final  Home? errorHome;
+ final  List<ProductData>? _errorProducts;
+ List<ProductData>? get errorProducts {
+  final value = _errorProducts;
+  if (value == null) return null;
+  if (_errorProducts is EqualUnmodifiableListView) return _errorProducts;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
  final  bool? offline;
 
 /// Create a copy of HomeState
@@ -398,21 +422,21 @@ $ErrorHomeStateCopyWith<ErrorHomeState> get copyWith => _$ErrorHomeStateCopyWith
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'HomeState.error'))
-    ..add(DiagnosticsProperty('errorHome', errorHome))..add(DiagnosticsProperty('offline', offline));
+    ..add(DiagnosticsProperty('errorProducts', errorProducts))..add(DiagnosticsProperty('offline', offline));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ErrorHomeState&&(identical(other.errorHome, errorHome) || other.errorHome == errorHome)&&(identical(other.offline, offline) || other.offline == offline));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ErrorHomeState&&const DeepCollectionEquality().equals(other._errorProducts, _errorProducts)&&(identical(other.offline, offline) || other.offline == offline));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,errorHome,offline);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_errorProducts),offline);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'HomeState.error(errorHome: $errorHome, offline: $offline)';
+  return 'HomeState.error(errorProducts: $errorProducts, offline: $offline)';
 }
 
 
@@ -423,7 +447,7 @@ abstract mixin class $ErrorHomeStateCopyWith<$Res> implements $HomeStateCopyWith
   factory $ErrorHomeStateCopyWith(ErrorHomeState value, $Res Function(ErrorHomeState) _then) = _$ErrorHomeStateCopyWithImpl;
 @useResult
 $Res call({
- Home? errorHome, bool? offline
+ List<ProductData>? errorProducts, bool? offline
 });
 
 
@@ -440,10 +464,10 @@ class _$ErrorHomeStateCopyWithImpl<$Res>
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? errorHome = freezed,Object? offline = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? errorProducts = freezed,Object? offline = freezed,}) {
   return _then(ErrorHomeState(
-errorHome: freezed == errorHome ? _self.errorHome : errorHome // ignore: cast_nullable_to_non_nullable
-as Home?,offline: freezed == offline ? _self.offline : offline // ignore: cast_nullable_to_non_nullable
+errorProducts: freezed == errorProducts ? _self._errorProducts : errorProducts // ignore: cast_nullable_to_non_nullable
+as List<ProductData>?,offline: freezed == offline ? _self.offline : offline // ignore: cast_nullable_to_non_nullable
 as bool?,
   ));
 }

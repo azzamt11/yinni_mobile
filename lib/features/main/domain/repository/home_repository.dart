@@ -1,18 +1,18 @@
 import 'package:flutter/foundation.dart';
 import 'package:yinni_mobile/features/main/data/models/product_api_response.dart';
-import 'package:yinni_mobile/features/main/data/services/home_service.dart';
+import 'package:yinni_mobile/features/main/data/services/product_service.dart';
 import 'package:yinni_mobile/core/repositories/cache/database/app_database.dart';
 import 'package:yinni_mobile/features/main/data/models/product_data.dart';
 
 class HomeRepository {
-  HomeRepository(this._homeService, this._db);
+  HomeRepository(this._productService, this._db);
 
-  final HomeService _homeService;
+  final ProductService _productService;
   final AppDatabase _db;
 
   Future<productApiResponse> fetch({bool isRefresh = false}) async {
     try {
-      final response = await _homeService.fetch();
+      final response = await _productService.fetch();
       final apiResponse = productApiResponse.fromChopperResponse(response);
 
       // 1. If network is successful, update the cache

@@ -1,10 +1,10 @@
 import 'package:yinni_mobile/core/base/di/dependency_injection.dart';
 import 'package:yinni_mobile/features/main/domain/repository/home_repository.dart';
-import 'package:yinni_mobile/features/main/presentation/view_models/home.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:yinni_mobile/features/main/data/models/product_data.dart';
 
 part 'home_cubit.freezed.dart';
 part 'home_state.dart';
@@ -20,11 +20,7 @@ class HomeCubit extends Cubit<HomeState> {
 
   Future<void> fetch() async {
     emit(LoadingHomeState(
-      loadingHome: Home(
-        products: null,
-        loading: true,
-        error: null
-      )
+      loadingProducts: [],
     ));
     await Future.delayed(const Duration(seconds: 5));
     //try {
@@ -32,16 +28,12 @@ class HomeCubit extends Cubit<HomeState> {
       if(response.code == 200) {
         debugPrint("PACKAGE BUG STEP 0 : response.code == 200 ==> response = $response");
         emit(LoadedHomeState(
-          home: Home.fromHomeApiResponse(response)
+          products: response.data
         ));
       } else {
         debugPrint("PACKAGE BUG STEP 1 : response.code != 200 ==> response = $response, response?.message = ${response.message}");
         emit(ErrorHomeState(
-          errorHome: Home(
-            products: null,
-            loading: false, 
-            error: response.message,
-          ),
+          errorProducts: [],
           offline: response.message.toString().toLowerCase().contains("socket")
         ));
       }

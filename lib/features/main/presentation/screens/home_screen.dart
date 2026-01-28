@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:yinni_mobile/core/extensions/string_extension.dart';
+import 'package:yinni_mobile/features/main/data/models/product_data.dart';
 import 'package:yinni_mobile/features/main/presentation/blocs/home_cubit.dart';
-import 'package:yinni_mobile/features/main/presentation/view_models/home.dart';
 import 'package:double_tap_to_exit/double_tap_to_exit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -527,17 +527,17 @@ class _HomeScreenState extends State<HomeScreen> {
                           // _buildExpandedMenu(context, constraints, textTheme),
                           BlocBuilder<HomeCubit, HomeState>(
                             builder: (context, state) {
-                              Home? home;
+                              List<ProductData>? products;
                               if(state is LoadingHomeState) {
-                                home = state.loadingHome;
+                                products = state.loadingProducts;
                               } else if(state is LoadedHomeState) {
-                                home = state.home;
+                                products = state.products;
                               } else if(state is ErrorHomeState) {
-                                home = state.errorHome;
+                                products = state.errorProducts;
                               }
-                              debugPrint("home = $home");
+                              debugPrint("products = $products");
                               return Column(
-                                children: home?.products?.map((e) => Text(e.title)).toList() ?? [],
+                                children: products?.map((e) => Text(e.title)).toList() ?? [],
                               );
                             }
                           )
