@@ -18,5 +18,15 @@ class AppRouter extends RootStackRouter {
         page: HomeRoute.page,
         path: '/home',
       ),
+
+      // AutoRoute(
+      //   page: SignInRoute.page,
+      //   path: '/sign-in',
+      // ),
+
+      // AutoRoute(
+      //   page: SignUpRoute.page,
+      //   path: '/sign-up',
+      // ),
   ];
 }

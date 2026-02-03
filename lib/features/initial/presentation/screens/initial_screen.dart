@@ -1,6 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:yinni_mobile/features/initial/presentation/widgets/onboarding_drawer.dart';
 
+@RoutePage()
 class InitialScreen extends StatefulWidget {
   const InitialScreen({super.key});
 
