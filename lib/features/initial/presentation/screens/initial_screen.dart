@@ -84,10 +84,25 @@ class _InitialScreenState extends State<InitialScreen> with TickerProviderStateM
           PageView(
             controller: _pageController,
             onPageChanged: _onPageChanged,
-            children: const [
-              ColoredBox(color: Colors.red),
-              ColoredBox(color: Colors.green),
-              ColoredBox(color: Colors.blue),
+            children: [
+              Image.asset(
+                'assets/features/initial/poster_1.png',
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: double.infinity,
+              ),
+              Image.asset(
+                'assets/features/initial/poster_2.png',
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: double.infinity,
+              ),
+              Image.asset(
+                'assets/features/initial/poster_3.png',
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: double.infinity,
+              ),
             ],
           ),
 
@@ -112,7 +127,6 @@ class _InitialScreenState extends State<InitialScreen> with TickerProviderStateM
               ],
             ),
           ),
-
         ],
       ),
     );
@@ -129,10 +143,10 @@ class _InitialScreenState extends State<InitialScreen> with TickerProviderStateM
           return Expanded(
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 4),
-              height: 7,
+              height: 6,
               decoration: BoxDecoration(
                 color: Colors.black12,
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(3),
               ),
               child: AnimatedBuilder(
                 animation: _progressControllers[index],
@@ -143,7 +157,7 @@ class _InitialScreenState extends State<InitialScreen> with TickerProviderStateM
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: BorderRadius.circular(3),
                       ),
                     ),
                   );
