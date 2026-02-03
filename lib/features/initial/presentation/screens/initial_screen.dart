@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yinni_mobile/features/initial/presentation/widgets/onboarding_drawer.dart';
 
 class InitialScreen extends StatefulWidget {
   const InitialScreen({super.key});
@@ -8,10 +9,13 @@ class InitialScreen extends StatefulWidget {
 }
 
 class _InitialScreenState extends State<InitialScreen> with TickerProviderStateMixin {
+  late AnimationController _drawerController;
   late PageController _pageController;
   late List<AnimationController> _progressControllers;
-
+  
+  bool _drawerShown = false;
   int _currentPage = 0;
+
   final int pageCount = 3;
   final Duration progressDuration = const Duration(seconds: 5);
 
@@ -27,6 +31,11 @@ class _InitialScreenState extends State<InitialScreen> with TickerProviderStateM
         vsync: this,
         duration: progressDuration,
       ),
+    );
+
+    _drawerController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
     );
 
     _startProgress(0);
@@ -47,19 +56,23 @@ class _InitialScreenState extends State<InitialScreen> with TickerProviderStateM
 
     _progressControllers[index].addStatusListener((status) {
       if (status == AnimationStatus.completed &&
-          index == _currentPage &&
-          index < pageCount - 1) {
-        _pageController.nextPage(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-        );
+          index == _currentPage) {
+
+        if (index < pageCount - 1) {
+          _pageController.nextPage(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
+        } else if (!_drawerShown) {
+          _drawerShown = true;
+          _drawerController.forward();
+        }
       }
     });
   }
 
   void _onPageChanged(int index) {
     if (index < _currentPage) {
-      // Swipe back → reset immediately
       _progressControllers[index].reset();
     }
 
@@ -105,8 +118,6 @@ class _InitialScreenState extends State<InitialScreen> with TickerProviderStateM
               ),
             ],
           ),
-
-          // Indicator stays in safe area only
           Positioned(
             top: 0,
             left: 0,
@@ -127,10 +138,10 @@ class _InitialScreenState extends State<InitialScreen> with TickerProviderStateM
               ],
             ),
           ),
+          OnboardingDrawer(animation: _drawerController),
         ],
       ),
     );
-
   }
 
   Widget _indicator() {
