@@ -19,9 +19,17 @@ final class _$ProductService extends ProductService {
   final Type definitionType = ProductService;
 
   @override
-  Future<Response<ProductApiResponse>> fetch() {
+  Future<Response<ProductListApiResponse>> fetch(Map<String, dynamic> params) {
     final Uri $url = Uri.parse('/home/v1/products');
-    final Request $request = Request('GET', $url, client.baseUrl);
-    return client.send<ProductApiResponse, ProductApiResponse>($request);
+    final Map<String, dynamic> $params = <String, dynamic>{'params': params};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+    );
+    return client.send<ProductListApiResponse, ProductListApiResponse>(
+      $request,
+    );
   }
 }

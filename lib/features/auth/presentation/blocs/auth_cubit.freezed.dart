@@ -240,12 +240,12 @@ $LoadingAuthStateCopyWith<LoadingAuthState> get copyWith => _$LoadingAuthStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadingAuthState&&const DeepCollectionEquality().equals(other.loadingAuth, loadingAuth));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadingAuthState&&(identical(other.loadingAuth, loadingAuth) || other.loadingAuth == loadingAuth));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(loadingAuth));
+int get hashCode => Object.hash(runtimeType,loadingAuth);
 
 @override
 String toString() {
@@ -306,12 +306,12 @@ $LoadedAuthStateCopyWith<LoadedAuthState> get copyWith => _$LoadedAuthStateCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadedAuthState&&const DeepCollectionEquality().equals(other.data, data));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadedAuthState&&(identical(other.data, data) || other.data == data));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(data));
+int get hashCode => Object.hash(runtimeType,data);
 
 @override
 String toString() {
@@ -373,12 +373,12 @@ $ErrorAuthStateCopyWith<ErrorAuthState> get copyWith => _$ErrorAuthStateCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ErrorAuthState&&const DeepCollectionEquality().equals(other.errorAuth, errorAuth)&&(identical(other.offline, offline) || other.offline == offline));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ErrorAuthState&&(identical(other.errorAuth, errorAuth) || other.errorAuth == errorAuth)&&(identical(other.offline, offline) || other.offline == offline));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(errorAuth),offline);
+int get hashCode => Object.hash(runtimeType,errorAuth,offline);
 
 @override
 String toString() {

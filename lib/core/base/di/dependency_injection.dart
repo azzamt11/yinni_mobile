@@ -3,8 +3,10 @@ import 'package:yinni_mobile/core/repositories/cache/database/app_database.dart'
 import 'package:yinni_mobile/core/repositories/cache/volume/image_cache_manager.dart';
 import 'package:yinni_mobile/core/repositories/network/service_manager.dart';
 import 'package:yinni_mobile/core/repositories/network/utilities/json_converter.dart';
+import 'package:yinni_mobile/features/auth/data/models/sign_in_api_response.dart';
+import 'package:yinni_mobile/features/auth/data/models/sign_up_api_response.dart';
 import 'package:yinni_mobile/features/auth/domain/usecase/auth_usecase.dart';
-import 'package:yinni_mobile/features/main/data/models/product_api_response.dart';
+import 'package:yinni_mobile/features/main/data/models/product_list_api_response.dart';
 import 'package:yinni_mobile/features/main/data/services/product_service.dart';
 import 'package:yinni_mobile/features/main/domain/repository/home_repository.dart';
 import 'package:get_it/get_it.dart';
@@ -17,7 +19,9 @@ Future<void> injectServices() async {
   
   // --- 2. Register Model Factories ---
   injector.get<Map<Type, JsonFactory>>().addAll({
-    ProductApiResponse: ProductApiResponse.fromJsonFactory,
+    ProductListApiResponse: ProductListApiResponse.fromJson,
+    SignInApiResponse: SignInApiResponse.fromJson,
+    SignUpApiResponse: SignUpApiResponse.fromJson,
   });
 
   injector.registerLazySingleton<JsonModelConverter>(() => JsonModelConverter(

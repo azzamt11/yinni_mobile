@@ -123,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     ).then((_) {
       if (context.mounted) {
-        context.read<HomeCubit>().reload(delay: Duration(seconds: 5));
+        context.read<HomeCubit>().reload();
       }
     });
   }
@@ -505,7 +505,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // final topPadding = MediaQuery.of(context).padding.top;
 
     return BlocProvider<HomeCubit>(
-      create: (context) => HomeCubit.create(context)..fetch(),
+      create: (context) => HomeCubit.create(context)..fetch(1),
       child: DoubleTapToExit(
         child: Scaffold(
           body: LayoutBuilder(
@@ -529,11 +529,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             builder: (context, state) {
                               List<ProductData>? products;
                               if(state is LoadingHomeState) {
-                                products = state.loadingProducts;
+                                products = state.loadingHome?.data;
                               } else if(state is LoadedHomeState) {
-                                products = state.products;
+                                products = state.data?.data;
                               } else if(state is ErrorHomeState) {
-                                products = state.errorProducts;
+                                products = state.errorHome?.data;
                               }
                               debugPrint("products = $products");
                               return Column(

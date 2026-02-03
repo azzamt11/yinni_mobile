@@ -432,14 +432,14 @@ class $UsersTable extends Users with TableInfo<$UsersTable, UserEntity> {
     requiredDuringInsert: true,
   );
   @override
-  late final GeneratedColumnWithTypeConverter<AuthData, String> data =
+  late final GeneratedColumnWithTypeConverter<UserData, String> data =
       GeneratedColumn<String>(
         'data',
         aliasedName,
         false,
         type: DriftSqlType.string,
         requiredDuringInsert: true,
-      ).withConverter<AuthData>($UsersTable.$converterdata);
+      ).withConverter<UserData>($UsersTable.$converterdata);
   @override
   List<GeneratedColumn> get $columns => [id, data];
   @override
@@ -486,13 +486,13 @@ class $UsersTable extends Users with TableInfo<$UsersTable, UserEntity> {
     return $UsersTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<AuthData, String> $converterdata =
-      const AuthDataConverter();
+  static TypeConverter<UserData, String> $converterdata =
+      const UserDataConverter();
 }
 
 class UserEntity extends DataClass implements Insertable<UserEntity> {
   final String id;
-  final AuthData data;
+  final UserData data;
   const UserEntity({required this.id, required this.data});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -515,7 +515,7 @@ class UserEntity extends DataClass implements Insertable<UserEntity> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return UserEntity(
       id: serializer.fromJson<String>(json['id']),
-      data: serializer.fromJson<AuthData>(json['data']),
+      data: serializer.fromJson<UserData>(json['data']),
     );
   }
   @override
@@ -523,11 +523,11 @@ class UserEntity extends DataClass implements Insertable<UserEntity> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'data': serializer.toJson<AuthData>(data),
+      'data': serializer.toJson<UserData>(data),
     };
   }
 
-  UserEntity copyWith({String? id, AuthData? data}) =>
+  UserEntity copyWith({String? id, UserData? data}) =>
       UserEntity(id: id ?? this.id, data: data ?? this.data);
   UserEntity copyWithCompanion(UsersCompanion data) {
     return UserEntity(
@@ -555,7 +555,7 @@ class UserEntity extends DataClass implements Insertable<UserEntity> {
 
 class UsersCompanion extends UpdateCompanion<UserEntity> {
   final Value<String> id;
-  final Value<AuthData> data;
+  final Value<UserData> data;
   final Value<int> rowid;
   const UsersCompanion({
     this.id = const Value.absent(),
@@ -564,7 +564,7 @@ class UsersCompanion extends UpdateCompanion<UserEntity> {
   });
   UsersCompanion.insert({
     required String id,
-    required AuthData data,
+    required UserData data,
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        data = Value(data);
@@ -582,7 +582,7 @@ class UsersCompanion extends UpdateCompanion<UserEntity> {
 
   UsersCompanion copyWith({
     Value<String>? id,
-    Value<AuthData>? data,
+    Value<UserData>? data,
     Value<int>? rowid,
   }) {
     return UsersCompanion(
@@ -915,13 +915,13 @@ typedef $$AuthTokensTableProcessedTableManager =
 typedef $$UsersTableCreateCompanionBuilder =
     UsersCompanion Function({
       required String id,
-      required AuthData data,
+      required UserData data,
       Value<int> rowid,
     });
 typedef $$UsersTableUpdateCompanionBuilder =
     UsersCompanion Function({
       Value<String> id,
-      Value<AuthData> data,
+      Value<UserData> data,
       Value<int> rowid,
     });
 
@@ -938,7 +938,7 @@ class $$UsersTableFilterComposer extends Composer<_$AppDatabase, $UsersTable> {
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnWithTypeConverterFilters<AuthData, AuthData, String> get data =>
+  ColumnWithTypeConverterFilters<UserData, UserData, String> get data =>
       $composableBuilder(
         column: $table.data,
         builder: (column) => ColumnWithTypeConverterFilters(column),
@@ -977,7 +977,7 @@ class $$UsersTableAnnotationComposer
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<AuthData, String> get data =>
+  GeneratedColumnWithTypeConverter<UserData, String> get data =>
       $composableBuilder(column: $table.data, builder: (column) => column);
 }
 
@@ -1010,13 +1010,13 @@ class $$UsersTableTableManager
           updateCompanionCallback:
               ({
                 Value<String> id = const Value.absent(),
-                Value<AuthData> data = const Value.absent(),
+                Value<UserData> data = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => UsersCompanion(id: id, data: data, rowid: rowid),
           createCompanionCallback:
               ({
                 required String id,
-                required AuthData data,
+                required UserData data,
                 Value<int> rowid = const Value.absent(),
               }) => UsersCompanion.insert(id: id, data: data, rowid: rowid),
           withReferenceMapper: (p0) => p0

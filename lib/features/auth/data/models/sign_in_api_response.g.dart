@@ -1,20 +1,20 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'auth_api_response.dart';
+part of 'sign_in_api_response.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-AuthApiResponse _$AuthApiResponseFromJson(Map<String, dynamic> json) =>
-    AuthApiResponse(
+SignInApiResponse _$SignInApiResponseFromJson(Map<String, dynamic> json) =>
+    SignInApiResponse(
       accessToken: json['accessToken'] as String?,
       tokenType: json['tokenType'] as String?,
       expiresIn: (json['expiresIn'] as num?)?.toInt(),
-      data: AuthData.fromJson(json['data'] as Map<String, dynamic>),
+      data: UserData.fromJson(json['data'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$AuthApiResponseToJson(AuthApiResponse instance) =>
+Map<String, dynamic> _$SignInApiResponseToJson(SignInApiResponse instance) =>
     <String, dynamic>{
       'accessToken': instance.accessToken,
       'tokenType': instance.tokenType,

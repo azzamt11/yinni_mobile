@@ -4,7 +4,8 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
-import 'package:yinni_mobile/features/auth/data/models/auth_data.dart';
+import 'package:yinni_mobile/core/common/models/param.dart';
+import 'package:yinni_mobile/features/auth/data/models/user_data.dart';
 import 'package:yinni_mobile/features/main/data/models/product_data.dart';
 
 part 'app_database.g.dart';
@@ -18,15 +19,15 @@ class ProductDataConverter extends TypeConverter<ProductData, String> {
   String toSql(ProductData value) => json.encode(value.toJson());
 }
 
-class AuthDataConverter extends TypeConverter<AuthData, String> {
-  const AuthDataConverter();
+class UserDataConverter extends TypeConverter<UserData, String> {
+  const UserDataConverter();
 
   @override
-  AuthData fromSql(String fromDb) =>
-      AuthData.fromJson(json.decode(fromDb));
+  UserData fromSql(String fromDb) =>
+      UserData.fromJson(json.decode(fromDb));
 
   @override
-  String toSql(AuthData value) =>
+  String toSql(UserData value) =>
       json.encode(value.toJson());
 }
 
@@ -54,7 +55,7 @@ class AuthTokens extends Table {
 @DataClassName('UserEntity')
 class Users extends Table {
   TextColumn get id => text()();
-  TextColumn get data => text().map(const AuthDataConverter())();
+  TextColumn get data => text().map(const UserDataConverter())();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -107,13 +108,13 @@ class AppDatabase extends _$AppDatabase {
     return row?.value;
   }
 
-  Future<void> saveUser(AuthData user) async {
+  Future<void> saveUser(UserData user) async {
     await into(users).insertOnConflictUpdate(
       UserEntity(id: user.id, data: user),
     );
   }
 
-  Future<AuthData?> getCurrentUser() async {
+  Future<UserData?> getCurrentUser() async {
     final row = await select(users).getSingleOrNull();
     return row?.data;
   }
