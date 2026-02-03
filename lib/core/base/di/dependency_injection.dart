@@ -5,6 +5,8 @@ import 'package:yinni_mobile/core/repositories/network/service_manager.dart';
 import 'package:yinni_mobile/core/repositories/network/utilities/json_converter.dart';
 import 'package:yinni_mobile/features/auth/data/models/sign_in_api_response.dart';
 import 'package:yinni_mobile/features/auth/data/models/sign_up_api_response.dart';
+import 'package:yinni_mobile/features/auth/data/services/auth_service.dart';
+import 'package:yinni_mobile/features/auth/domain/usecase/auth_repository.dart';
 import 'package:yinni_mobile/features/auth/domain/usecase/auth_usecase.dart';
 import 'package:yinni_mobile/features/main/data/models/product_list_api_response.dart';
 import 'package:yinni_mobile/features/main/data/services/product_service.dart';
@@ -53,17 +55,18 @@ Future<void> injectServices() async {
     ProductService.create(sm.productClient),
   );
 
-  // // Auth Client (Port 8000)
-  // injector.registerSingleton<AuthService>(
-  //   AuthService.create(sm.authClient),
-  // );
-  
-  // // Prompt Client (Port 8003)
-  // injector.registerSingleton<PromptService>(
-  //   PromptService.create(sm.promptClient),
-  // );
+  // Auth Client (Port 8000)
+  injector.registerSingleton<AuthService>(
+    AuthService.create(sm.authClient),
+  );
 
   // --- 6. Repositories ---
+  injector.registerLazySingleton<AuthRepository>(() => AuthRepository(
+    injector.get<AuthService>(),
+    injector.get<AuthUsecase>(),
+    injector.get<AppDatabase>()
+  ));
+
   injector.registerLazySingleton<HomeRepository>(() => HomeRepository(
     injector.get<ProductService>(),
     injector.get<AppDatabase>(),

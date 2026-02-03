@@ -4,7 +4,6 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
-import 'package:yinni_mobile/core/common/models/param.dart';
 import 'package:yinni_mobile/features/auth/data/models/user_data.dart';
 import 'package:yinni_mobile/features/main/data/models/product_data.dart';
 
