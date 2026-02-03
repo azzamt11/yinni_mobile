@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:chopper/chopper.dart';
+import 'package:flutter/material.dart';
+import 'package:yinni_mobile/core/base/di/dependency_injection.dart';
 import 'package:yinni_mobile/core/repositories/cache/database/app_database.dart';
 
 class AuthUsecase {
@@ -7,6 +9,9 @@ class AuthUsecase {
   String? _cachedToken;
 
   AuthUsecase(this._db);
+
+  static AuthUsecase create(BuildContext context) =>
+    AuthUsecase(injector.get());
 
   Future<void> initializeToken() async {
     try {

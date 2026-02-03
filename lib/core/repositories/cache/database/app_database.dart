@@ -4,6 +4,7 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
+import 'package:yinni_mobile/features/auth/data/models/auth_data.dart';
 import 'package:yinni_mobile/features/main/data/models/product_data.dart';
 
 part 'app_database.g.dart';
@@ -16,6 +17,19 @@ class ProductDataConverter extends TypeConverter<ProductData, String> {
   @override
   String toSql(ProductData value) => json.encode(value.toJson());
 }
+
+class AuthDataConverter extends TypeConverter<AuthData, String> {
+  const AuthDataConverter();
+
+  @override
+  AuthData fromSql(String fromDb) =>
+      AuthData.fromJson(json.decode(fromDb));
+
+  @override
+  String toSql(AuthData value) =>
+      json.encode(value.toJson());
+}
+
 
 // --- TABLES ---
 
@@ -37,9 +51,20 @@ class AuthTokens extends Table {
   Set<Column> get primaryKey => {key};
 }
 
+@DataClassName('UserEntity')
+class Users extends Table {
+  TextColumn get id => text()();
+  TextColumn get data => text().map(const AuthDataConverter())();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+
+
 // --- DATABASE CLASS ---
 
-@DriftDatabase(tables: [Products, AuthTokens])
+@DriftDatabase(tables: [Products, AuthTokens, Users])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
@@ -69,24 +94,40 @@ class AppDatabase extends _$AppDatabase {
   // ---------------------------------------------------------------------------
   // AUTH SERVICE LOGIC
   // ---------------------------------------------------------------------------
-  
-  /// Saves a token (updates if exists)
+
   Future<void> saveToken(String key, String value) async {
     await into(authTokens).insertOnConflictUpdate(
       AuthTokenEntity(key: key, value: value),
     );
   }
 
-  /// Retrieves a token by key
   Future<String?> getToken(String key) async {
     final query = select(authTokens)..where((t) => t.key.equals(key));
     final row = await query.getSingleOrNull();
     return row?.value;
   }
 
-  /// Clears all tokens (Logout)
-  Future<void> clearAuth() => delete(authTokens).go();
+  Future<void> saveUser(AuthData user) async {
+    await into(users).insertOnConflictUpdate(
+      UserEntity(id: user.id, data: user),
+    );
+  }
+
+  Future<AuthData?> getCurrentUser() async {
+    final row = await select(users).getSingleOrNull();
+    return row?.data;
+  }
+
+  Future<void> clearAuth() async {
+    await batch((batch) {
+      batch.deleteAll(authTokens);
+      batch.deleteAll(users);
+    });
+  }
 }
+
+
+// --- CONNECTION ---
 
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
