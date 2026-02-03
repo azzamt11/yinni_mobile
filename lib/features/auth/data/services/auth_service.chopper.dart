@@ -1,7 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format width=80
 
-part of "auth_service.dart";
+part of 'auth_service.dart';
 
 // **************************************************************************
 // ChopperGenerator
