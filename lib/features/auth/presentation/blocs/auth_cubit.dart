@@ -27,7 +27,7 @@ class AuthCubit extends Cubit<AuthState> {
       });
       if(response.code == 200) {
         emit(LoadedAuthState(
-          data: response.data.data,
+          data: response.data.user,
           ));
       } else {
         emit(ErrorAuthState(

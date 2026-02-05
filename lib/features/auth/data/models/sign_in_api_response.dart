@@ -9,20 +9,20 @@ class SignInApiResponse {
   final String? accessToken;
   final String? tokenType;
   final String? expiresIn;
-  final UserData data;
+  final UserData user;
 
   const SignInApiResponse({
     required this.accessToken,
     required this.tokenType,
     required this.expiresIn,
-    required this.data,
+    required this.user,
   });
 
   static const empty = SignInApiResponse(
     accessToken: null,
     tokenType: null,
     expiresIn: null,
-    data: UserData.empty,
+    user: UserData.empty,
   );
 
   factory SignInApiResponse.fromJson(Map<String, dynamic> json) =>

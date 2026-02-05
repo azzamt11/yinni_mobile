@@ -10,8 +10,8 @@ SignInApiResponse _$SignInApiResponseFromJson(Map<String, dynamic> json) =>
     SignInApiResponse(
       accessToken: json['accessToken'] as String?,
       tokenType: json['tokenType'] as String?,
-      expiresIn: (json['expiresIn'] as num?)?.toInt(),
-      data: UserData.fromJson(json['data'] as Map<String, dynamic>),
+      expiresIn: json['expiresIn'] as String?,
+      user: UserData.fromJson(json['user'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$SignInApiResponseToJson(SignInApiResponse instance) =>
@@ -19,5 +19,5 @@ Map<String, dynamic> _$SignInApiResponseToJson(SignInApiResponse instance) =>
       'accessToken': instance.accessToken,
       'tokenType': instance.tokenType,
       'expiresIn': instance.expiresIn,
-      'data': instance.data.toJson(),
+      'user': instance.user.toJson(),
     };

@@ -1,4 +1,3 @@
-import 'package:flutter/widgets.dart';
 import 'package:yinni_mobile/core/base/di/dependency_injection.dart';
 import 'package:yinni_mobile/core/common/models/api_response.dart';
 import 'package:yinni_mobile/features/auth/data/models/sign_in_api_response.dart';
@@ -22,7 +21,6 @@ class AuthRepository {
   ) async {
     try {
       final response = await _authService.signIn(credentials);
-      debugPrint("SIGNIN BUG STEP 0: response = ${response.toString()}");
 
       if (!response.isSuccessful || response.body == null) {
         return ApiResponse<SignInApiResponse>(
@@ -37,7 +35,7 @@ class AuthRepository {
       if (apiResponse.accessToken?.isNotEmpty == true) {
         await _db.transaction(() async {
           await _authUsecase.setToken(apiResponse.accessToken!);
-          await _db.saveUser(apiResponse.data);
+          await _db.saveUser(apiResponse.user);
         });
       }
 
@@ -60,6 +58,7 @@ class AuthRepository {
   ) async {
     try {
       final response = await _authService.signUp(credentials);
+      
       if (!response.isSuccessful || response.body == null) {
         return ApiResponse<SignUpApiResponse>(
           code: response.statusCode,

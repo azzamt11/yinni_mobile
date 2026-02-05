@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:chopper/chopper.dart';
+import 'package:flutter/foundation.dart';
 
 typedef JsonFactory<T> = T Function(Map<String, dynamic> json);
 
@@ -32,6 +33,10 @@ class JsonModelConverter extends JsonConverter {
   FutureOr<Response<ResultType>> convertResponse<ResultType, Item>(
     Response response,
   ) async {
+    debugPrint('================ RAW BACKEND (PRE-DECODE) ================');
+    debugPrint('Status: ${response.statusCode}');
+    debugPrint('Raw bodyString: ${response.bodyString}');
+    debugPrint('==========================================================');
     final jsonRes = await super.convertResponse(response);
     return jsonRes.copyWith<ResultType>(body: _decode<Item>(jsonRes.body));
   }
