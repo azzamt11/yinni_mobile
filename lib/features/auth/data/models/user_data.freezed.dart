@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserData {
 
-@HiveField(0) String get id;@HiveField(2) String get name;@HiveField(3) String get email;
+@HiveField(0) int get id;@HiveField(2) String get name;@HiveField(3) String get email;
 /// Create a copy of UserData
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $UserDataCopyWith<$Res>  {
   factory $UserDataCopyWith(UserData value, $Res Function(UserData) _then) = _$UserDataCopyWithImpl;
 @useResult
 $Res call({
-@HiveField(0) String id,@HiveField(2) String name,@HiveField(3) String email
+@HiveField(0) int id,@HiveField(2) String name,@HiveField(3) String email
 });
 
 
@@ -68,7 +68,7 @@ class _$UserDataCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? email = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -155,7 +155,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@HiveField(0)  String id, @HiveField(2)  String name, @HiveField(3)  String email)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@HiveField(0)  int id, @HiveField(2)  String name, @HiveField(3)  String email)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserData() when $default != null:
 return $default(_that.id,_that.name,_that.email);case _:
@@ -176,7 +176,7 @@ return $default(_that.id,_that.name,_that.email);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@HiveField(0)  String id, @HiveField(2)  String name, @HiveField(3)  String email)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@HiveField(0)  int id, @HiveField(2)  String name, @HiveField(3)  String email)  $default,) {final _that = this;
 switch (_that) {
 case _UserData():
 return $default(_that.id,_that.name,_that.email);case _:
@@ -196,7 +196,7 @@ return $default(_that.id,_that.name,_that.email);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@HiveField(0)  String id, @HiveField(2)  String name, @HiveField(3)  String email)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@HiveField(0)  int id, @HiveField(2)  String name, @HiveField(3)  String email)?  $default,) {final _that = this;
 switch (_that) {
 case _UserData() when $default != null:
 return $default(_that.id,_that.name,_that.email);case _:
@@ -214,7 +214,7 @@ class _UserData implements UserData {
   const _UserData({@HiveField(0) required this.id, @HiveField(2) this.name = "", @HiveField(3) this.email = ""});
   factory _UserData.fromJson(Map<String, dynamic> json) => _$UserDataFromJson(json);
 
-@override@HiveField(0) final  String id;
+@override@HiveField(0) final  int id;
 @override@JsonKey()@HiveField(2) final  String name;
 @override@JsonKey()@HiveField(3) final  String email;
 
@@ -251,7 +251,7 @@ abstract mixin class _$UserDataCopyWith<$Res> implements $UserDataCopyWith<$Res>
   factory _$UserDataCopyWith(_UserData value, $Res Function(_UserData) _then) = __$UserDataCopyWithImpl;
 @override @useResult
 $Res call({
-@HiveField(0) String id,@HiveField(2) String name,@HiveField(3) String email
+@HiveField(0) int id,@HiveField(2) String name,@HiveField(3) String email
 });
 
 
@@ -271,7 +271,7 @@ class __$UserDataCopyWithImpl<$Res>
 @override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? email = null,}) {
   return _then(_UserData(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,
   ));

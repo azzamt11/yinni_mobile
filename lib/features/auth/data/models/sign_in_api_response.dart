@@ -8,7 +8,7 @@ part 'sign_in_api_response.g.dart';
 class SignInApiResponse {
   final String? accessToken;
   final String? tokenType;
-  final int? expiresIn;
+  final String? expiresIn;
   final UserData data;
 
   const SignInApiResponse({

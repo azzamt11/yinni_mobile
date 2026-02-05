@@ -18,13 +18,7 @@ class AuthCubit extends Cubit<AuthState> {
   final AuthRepository _repository;
 
   Future<void> signIn(email, password) async {
-    emit(LoadingAuthState(
-      loadingAuth: Auth(
-        data: null,
-        loading: true,
-        error: null
-      )
-    ));
+    emit(LoadingAuthState());
     await Future.delayed(const Duration(seconds: 5));
     try {
       final response = await _repository.signIn({
@@ -33,42 +27,29 @@ class AuthCubit extends Cubit<AuthState> {
       });
       if(response.code == 200) {
         emit(LoadedAuthState(
-          data: Auth(
-            data: response.data.data,
-            loading: false,
-            error: null
-          )
-        ));
+          data: response.data.data,
+          ));
       } else {
         emit(ErrorAuthState(
-          errorAuth: Auth(
-            data: null,
-            loading: false,
-            error: response.message,
+          error: Error(
+            message: response.message,
+            isOffline: response.message.toString().toLowerCase().contains("socket")
           ),
-          offline: response.message.toString().toLowerCase().contains("socket")
+          
         ));
       }
     } catch(e) {
       emit(ErrorAuthState(
-        errorAuth: Auth(
-          data: null,
-          loading: false,
-          error: e.toString()
+        error: Error(
+          message: e.toString(),
+          isOffline: e.toString().toLowerCase().contains("socket")
         ),
-        offline: e.toString().toLowerCase().contains("socket")
       ));
     }
   }
 
   Future<void> signUp(email, password, name) async {
-    emit(LoadingAuthState(
-      loadingAuth: Auth(
-        data: null,
-        loading: true,
-        error: null
-      )
-    ));
+    emit(LoadingAuthState());
     await Future.delayed(const Duration(seconds: 5));
     try {
       final response = await _repository.signUp({
@@ -78,43 +59,35 @@ class AuthCubit extends Cubit<AuthState> {
       });
       if(response.code == 200) {
         emit(LoadedAuthState(
-          data: Auth(
-            data: UserData(id: response.data.userId ?? "0"),
-            loading: false,
-            error: null
-          )
+          data: UserData(id: response.data.userId ?? 0),
         ));
       } else {
         emit(ErrorAuthState(
-          errorAuth: Auth(
-            data: null,
-            loading: false,
-            error: response.message,
-          ),
-          offline: response.message.toString().toLowerCase().contains("socket")
+          error: Error(
+            message: response.message,
+            isOffline: response.message.toString().toLowerCase().contains("socket")
+          )
         ));
       }
     } catch(e) {
       emit(ErrorAuthState(
-        errorAuth: Auth(
-          data: null,
-          loading: false,
-          error: e.toString()
+        error: Error(
+          message: e.toString(),
+          isOffline: e.toString().toLowerCase().contains("socket")
         ),
-        offline: e.toString().toLowerCase().contains("socket")
       ));
     }
   }
 }
 
-class Auth {
-  final UserData? data;
-  final bool loading;
-  final String? error;
 
-  Auth({
-    required this.data,
-    required this.loading,
-    required this.error,
+class Error {
+
+  String? message;
+  bool? isOffline;
+
+  Error({
+    required this.message,
+    required this.isOffline
   });
 }

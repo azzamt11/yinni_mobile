@@ -1,4 +1,6 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:yinni_mobile/core/base/router/app_router.dart';
 
 class OnboardingDrawer extends StatelessWidget {
   final Animation<double> animation;
@@ -50,7 +52,7 @@ class OnboardingDrawer extends StatelessWidget {
                   const SizedBox(height: 10),
                   Text(
                     'Let\'s Shopping with Yinni...',
-                    style: t.textTheme.titleLarge?.copyWith(color: t.primaryColor),
+                    style: t.textTheme.titleMedium?.copyWith(color: t.primaryColor),
                     textAlign: TextAlign.center,
                   ),
                   Image.asset(
@@ -60,19 +62,19 @@ class OnboardingDrawer extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        context.router.replace(SignInRoute());
+                      },
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
                         backgroundColor: Theme.of(context).primaryColor,
-                        minimumSize: Size.zero,
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap, 
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        )
+                          borderRadius: BorderRadius.circular(14),
+                        ),
                       ),
                       child: Text(
                         "Get Started",
-                        style: t.textTheme.titleLarge?.copyWith(
+                        style: t.textTheme.titleMedium?.copyWith(
                           color: Colors.white,
                         ),
                       ),

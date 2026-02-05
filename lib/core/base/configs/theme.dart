@@ -29,19 +29,18 @@ ThemeData buildTheme() {
       fontWeight: FontWeight.w700,
       letterSpacing: 0.2,
     ),
-    titleMedium: GoogleFonts.quicksand(
+    titleLarge: GoogleFonts.quicksand(
       fontSize: 18.5,
       fontWeight: FontWeight.w400,
       letterSpacing: 0.2,
     ),
-    titleLarge: GoogleFonts.quicksand(
-      fontSize: 18.5,
+    titleMedium: GoogleFonts.quicksand(
+      fontSize: 17,
       fontWeight: FontWeight.w700,
       letterSpacing: 0.2,
-      color: Colors.green
     ),
     titleSmall: GoogleFonts.quicksand(
-      fontSize: 18,
+      fontSize: 16.5,
       fontWeight: FontWeight.w600,
       letterSpacing: 0.2,
     ),

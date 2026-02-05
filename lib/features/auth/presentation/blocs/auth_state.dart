@@ -5,17 +5,14 @@ abstract class AuthState with _$AuthState {
 
   const factory AuthState.initial() = InitialAuthState;
 
-  const factory AuthState.loading({
-    required Auth? loadingAuth
-  }) = LoadingAuthState;
+  const factory AuthState.loading() = LoadingAuthState;
 
   const factory AuthState.loaded({
-    required Auth? data
+    required UserData data
   }) = LoadedAuthState;
 
   const factory AuthState.error({
-    required Auth? errorAuth,
-    required bool? offline
+    required Error? error,
   }) = ErrorAuthState;
   
 }

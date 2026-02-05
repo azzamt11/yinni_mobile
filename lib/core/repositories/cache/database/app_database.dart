@@ -30,7 +30,6 @@ class UserDataConverter extends TypeConverter<UserData, String> {
       json.encode(value.toJson());
 }
 
-
 // --- TABLES ---
 
 @DataClassName('ProductEntity')
@@ -53,14 +52,14 @@ class AuthTokens extends Table {
 
 @DataClassName('UserEntity')
 class Users extends Table {
-  TextColumn get id => text()();
-  TextColumn get data => text().map(const UserDataConverter())();
+  IntColumn get id => integer()();
+
+  TextColumn get data =>
+      text().map(const UserDataConverter())();
 
   @override
   Set<Column> get primaryKey => {id};
 }
-
-
 
 // --- DATABASE CLASS ---
 
@@ -94,7 +93,6 @@ class AppDatabase extends _$AppDatabase {
   // ---------------------------------------------------------------------------
   // AUTH SERVICE LOGIC
   // ---------------------------------------------------------------------------
-
   Future<void> saveToken(String key, String value) async {
     await into(authTokens).insertOnConflictUpdate(
       AuthTokenEntity(key: key, value: value),
@@ -125,7 +123,6 @@ class AppDatabase extends _$AppDatabase {
     });
   }
 }
-
 
 // --- CONNECTION ---
 

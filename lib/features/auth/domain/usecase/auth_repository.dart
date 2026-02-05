@@ -1,5 +1,4 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:yinni_mobile/core/base/di/dependency_injection.dart';
 import 'package:yinni_mobile/core/common/models/api_response.dart';
 import 'package:yinni_mobile/features/auth/data/models/sign_in_api_response.dart';
@@ -23,11 +22,12 @@ class AuthRepository {
   ) async {
     try {
       final response = await _authService.signIn(credentials);
+      debugPrint("SIGNIN BUG STEP 0: response = ${response.toString()}");
 
       if (!response.isSuccessful || response.body == null) {
         return ApiResponse<SignInApiResponse>(
           code: response.statusCode,
-          message: response.error?.toString() ?? 'Sign in failed',
+          message: response.error?.toString(),
           data: SignInApiResponse.empty,
         );
       }
@@ -46,13 +46,10 @@ class AuthRepository {
         message: null,
         data: apiResponse,
       );
-    } catch (e, s) {
-      debugPrint("SignInRepository signIn error: $e");
-      debugPrintStack(stackTrace: s);
-
+    } catch (e) {
       return ApiResponse<SignInApiResponse>(
         code: 500,
-        message: "An error occurred while signing in.",
+        message: e.toString(),
         data: SignInApiResponse.empty,
       );
     }
@@ -66,7 +63,7 @@ class AuthRepository {
       if (!response.isSuccessful || response.body == null) {
         return ApiResponse<SignUpApiResponse>(
           code: response.statusCode,
-          message: response.error?.toString() ?? 'Sign up failed',
+          message: response.error?.toString(),
           data: SignUpApiResponse.empty,
         );
       }
@@ -78,13 +75,10 @@ class AuthRepository {
         message: null,
         data: apiResponse,
       );
-    } catch (e, s) {
-      debugPrint("SignInRepository signUp error: $e");
-      debugPrintStack(stackTrace: s);
-
+    } catch (e) {
       return ApiResponse<SignUpApiResponse>(
         code: 500,
-        message: "An error occurred while signing up.",
+        message: e.toString(),
         data: SignUpApiResponse.empty,
       );
     }

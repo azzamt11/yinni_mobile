@@ -35,7 +35,4 @@ class JsonModelConverter extends JsonConverter {
     final jsonRes = await super.convertResponse(response);
     return jsonRes.copyWith<ResultType>(body: _decode<Item>(jsonRes.body));
   }
-
-  @override
-  Request convertRequest(Request request) => request;
 }

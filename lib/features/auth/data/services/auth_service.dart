@@ -4,7 +4,7 @@ import 'package:yinni_mobile/features/auth/data/models/sign_up_api_response.dart
 
 part 'auth_service.chopper.dart';
 
-@ChopperApi(baseUrl: '/auth/v1')
+@ChopperApi(baseUrl: '/v1/auth')
 abstract class AuthService extends ChopperService {
   static AuthService create([ChopperClient? client]) => _$AuthService(client);
 

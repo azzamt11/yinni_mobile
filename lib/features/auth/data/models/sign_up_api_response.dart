@@ -5,7 +5,7 @@ part 'sign_up_api_response.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class SignUpApiResponse {
-  final String? userId;
+  final int? userId;
 
   const SignUpApiResponse({
     required this.userId,

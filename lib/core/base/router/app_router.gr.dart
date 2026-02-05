@@ -11,6 +11,22 @@
 part of 'app_router.dart';
 
 /// generated route for
+/// [EmptyScreen]
+class EmptyRoute extends PageRouteInfo<void> {
+  const EmptyRoute({List<PageRouteInfo>? children})
+    : super(EmptyRoute.name, initialChildren: children);
+
+  static const String name = 'EmptyRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const EmptyScreen();
+    },
+  );
+}
+
+/// generated route for
 /// [HomeScreen]
 class HomeRoute extends PageRouteInfo<void> {
   const HomeRoute({List<PageRouteInfo>? children})
@@ -38,6 +54,22 @@ class InitialRoute extends PageRouteInfo<void> {
     name,
     builder: (data) {
       return const InitialScreen();
+    },
+  );
+}
+
+/// generated route for
+/// [SignInScreen]
+class SignInRoute extends PageRouteInfo<void> {
+  const SignInRoute({List<PageRouteInfo>? children})
+    : super(SignInRoute.name, initialChildren: children);
+
+  static const String name = 'SignInRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const SignInScreen();
     },
   );
 }

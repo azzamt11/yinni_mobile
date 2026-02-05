@@ -128,13 +128,13 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function( Auth? loadingAuth)?  loading,TResult Function( Auth? data)?  loaded,TResult Function( Auth? errorAuth,  bool? offline)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( UserData data)?  loaded,TResult Function( Error? error)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case InitialAuthState() when initial != null:
 return initial();case LoadingAuthState() when loading != null:
-return loading(_that.loadingAuth);case LoadedAuthState() when loaded != null:
+return loading();case LoadedAuthState() when loaded != null:
 return loaded(_that.data);case ErrorAuthState() when error != null:
-return error(_that.errorAuth,_that.offline);case _:
+return error(_that.error);case _:
   return orElse();
 
 }
@@ -152,13 +152,13 @@ return error(_that.errorAuth,_that.offline);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function( Auth? loadingAuth)  loading,required TResult Function( Auth? data)  loaded,required TResult Function( Auth? errorAuth,  bool? offline)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( UserData data)  loaded,required TResult Function( Error? error)  error,}) {final _that = this;
 switch (_that) {
 case InitialAuthState():
 return initial();case LoadingAuthState():
-return loading(_that.loadingAuth);case LoadedAuthState():
+return loading();case LoadedAuthState():
 return loaded(_that.data);case ErrorAuthState():
-return error(_that.errorAuth,_that.offline);case _:
+return error(_that.error);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -175,13 +175,13 @@ return error(_that.errorAuth,_that.offline);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function( Auth? loadingAuth)?  loading,TResult? Function( Auth? data)?  loaded,TResult? Function( Auth? errorAuth,  bool? offline)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( UserData data)?  loaded,TResult? Function( Error? error)?  error,}) {final _that = this;
 switch (_that) {
 case InitialAuthState() when initial != null:
 return initial();case LoadingAuthState() when loading != null:
-return loading(_that.loadingAuth);case LoadedAuthState() when loaded != null:
+return loading();case LoadedAuthState() when loaded != null:
 return loaded(_that.data);case ErrorAuthState() when error != null:
-return error(_that.errorAuth,_that.offline);case _:
+return error(_that.error);case _:
   return null;
 
 }
@@ -225,67 +225,33 @@ String toString() {
 
 
 class LoadingAuthState implements AuthState {
-  const LoadingAuthState({required this.loadingAuth});
+  const LoadingAuthState();
   
 
- final  Auth? loadingAuth;
 
-/// Create a copy of AuthState
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$LoadingAuthStateCopyWith<LoadingAuthState> get copyWith => _$LoadingAuthStateCopyWithImpl<LoadingAuthState>(this, _$identity);
+
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadingAuthState&&(identical(other.loadingAuth, loadingAuth) || other.loadingAuth == loadingAuth));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadingAuthState);
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,loadingAuth);
+int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'AuthState.loading(loadingAuth: $loadingAuth)';
+  return 'AuthState.loading()';
 }
 
 
 }
 
-/// @nodoc
-abstract mixin class $LoadingAuthStateCopyWith<$Res> implements $AuthStateCopyWith<$Res> {
-  factory $LoadingAuthStateCopyWith(LoadingAuthState value, $Res Function(LoadingAuthState) _then) = _$LoadingAuthStateCopyWithImpl;
-@useResult
-$Res call({
- Auth? loadingAuth
-});
 
 
-
-
-}
-/// @nodoc
-class _$LoadingAuthStateCopyWithImpl<$Res>
-    implements $LoadingAuthStateCopyWith<$Res> {
-  _$LoadingAuthStateCopyWithImpl(this._self, this._then);
-
-  final LoadingAuthState _self;
-  final $Res Function(LoadingAuthState) _then;
-
-/// Create a copy of AuthState
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? loadingAuth = freezed,}) {
-  return _then(LoadingAuthState(
-loadingAuth: freezed == loadingAuth ? _self.loadingAuth : loadingAuth // ignore: cast_nullable_to_non_nullable
-as Auth?,
-  ));
-}
-
-
-}
 
 /// @nodoc
 
@@ -294,7 +260,7 @@ class LoadedAuthState implements AuthState {
   const LoadedAuthState({required this.data});
   
 
- final  Auth? data;
+ final  UserData data;
 
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
@@ -326,11 +292,11 @@ abstract mixin class $LoadedAuthStateCopyWith<$Res> implements $AuthStateCopyWit
   factory $LoadedAuthStateCopyWith(LoadedAuthState value, $Res Function(LoadedAuthState) _then) = _$LoadedAuthStateCopyWithImpl;
 @useResult
 $Res call({
- Auth? data
+ UserData data
 });
 
 
-
+$UserDataCopyWith<$Res> get data;
 
 }
 /// @nodoc
@@ -343,25 +309,33 @@ class _$LoadedAuthStateCopyWithImpl<$Res>
 
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? data = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? data = null,}) {
   return _then(LoadedAuthState(
-data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
-as Auth?,
+data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as UserData,
   ));
 }
 
-
+/// Create a copy of AuthState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$UserDataCopyWith<$Res> get data {
+  
+  return $UserDataCopyWith<$Res>(_self.data, (value) {
+    return _then(_self.copyWith(data: value));
+  });
+}
 }
 
 /// @nodoc
 
 
 class ErrorAuthState implements AuthState {
-  const ErrorAuthState({required this.errorAuth, required this.offline});
+  const ErrorAuthState({required this.error});
   
 
- final  Auth? errorAuth;
- final  bool? offline;
+ final  Error? error;
 
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
@@ -373,16 +347,16 @@ $ErrorAuthStateCopyWith<ErrorAuthState> get copyWith => _$ErrorAuthStateCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ErrorAuthState&&(identical(other.errorAuth, errorAuth) || other.errorAuth == errorAuth)&&(identical(other.offline, offline) || other.offline == offline));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ErrorAuthState&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,errorAuth,offline);
+int get hashCode => Object.hash(runtimeType,error);
 
 @override
 String toString() {
-  return 'AuthState.error(errorAuth: $errorAuth, offline: $offline)';
+  return 'AuthState.error(error: $error)';
 }
 
 
@@ -393,7 +367,7 @@ abstract mixin class $ErrorAuthStateCopyWith<$Res> implements $AuthStateCopyWith
   factory $ErrorAuthStateCopyWith(ErrorAuthState value, $Res Function(ErrorAuthState) _then) = _$ErrorAuthStateCopyWithImpl;
 @useResult
 $Res call({
- Auth? errorAuth, bool? offline
+ Error? error
 });
 
 
@@ -410,11 +384,10 @@ class _$ErrorAuthStateCopyWithImpl<$Res>
 
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? errorAuth = freezed,Object? offline = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? error = freezed,}) {
   return _then(ErrorAuthState(
-errorAuth: freezed == errorAuth ? _self.errorAuth : errorAuth // ignore: cast_nullable_to_non_nullable
-as Auth?,offline: freezed == offline ? _self.offline : offline // ignore: cast_nullable_to_non_nullable
-as bool?,
+error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as Error?,
   ));
 }
 

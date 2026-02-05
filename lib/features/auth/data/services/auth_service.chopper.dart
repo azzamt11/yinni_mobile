@@ -20,7 +20,7 @@ final class _$AuthService extends AuthService {
 
   @override
   Future<Response<SignInApiResponse>> signIn(Map<String, dynamic> body) {
-    final Uri $url = Uri.parse('/auth/v1/sign-in');
+    final Uri $url = Uri.parse('/v1/auth/sign-in');
     final $body = body;
     final Request $request = Request('POST', $url, client.baseUrl, body: $body);
     return client.send<SignInApiResponse, SignInApiResponse>($request);
@@ -28,7 +28,7 @@ final class _$AuthService extends AuthService {
 
   @override
   Future<Response<SignUpApiResponse>> signUp(Map<String, dynamic> body) {
-    final Uri $url = Uri.parse('/auth/v1/sign-up');
+    final Uri $url = Uri.parse('/v1/auth/sign-up');
     final $body = body;
     final Request $request = Request('POST', $url, client.baseUrl, body: $body);
     return client.send<SignUpApiResponse, SignUpApiResponse>($request);
