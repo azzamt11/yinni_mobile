@@ -21,9 +21,9 @@ class ServiceManager {
       errorConverter: converter,
     );
 
-    authClient = createClient('8000');
-    productClient = createClient('8002');
-    promptClient = createClient('8003');
+    authClient = createClient('8010');
+    productClient = createClient('8012');
+    promptClient = createClient('8013');
   }
 
   late final ChopperClient authClient;

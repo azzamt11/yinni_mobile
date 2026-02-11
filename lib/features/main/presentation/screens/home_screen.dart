@@ -12,7 +12,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  
+
   @override
   Widget build(BuildContext context) {
     final t = Theme.of(context);
@@ -39,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         }
                         if (state is ErrorHomeState) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(state.error?.message ?? "Seomthing went wrong")),
+                            SnackBar(content: Text(state.error.message ?? "Something went wrong")),
                           );
                         }
                       },

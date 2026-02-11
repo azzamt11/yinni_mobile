@@ -83,14 +83,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            const SizedBox(height: 70),
+                            const SizedBox(height: 50),
                             SizedBox(
-                              height: max(constraints.maxHeight - 770, 120),
+                              height: max(constraints.maxHeight - 770, 170),
                               child: Center(
                                 child: Image.asset(
                                   "assets/features/auth/ic_splash.png",
-                                  height: 300,
-                                  width: 300,
+                                  height: 200,
+                                  width: 200,
                                 ),
                               ),
                             ),
