@@ -17,116 +17,96 @@ class HomeCubit extends Cubit<HomeState> {
 
   final HomeRepository _repository;
 
-  int _currentPage = 1;
-  static const int _pageSize = 20;
-
-  Future<void> fetch(int page) async {
-    _currentPage = page;
-
-    emit(LoadingHomeState(
-      loadingHome: Home(
-        data: [],
-        loading: true,
-        error: null,
-      ),
-    ));
-
+  Future<void> fetch({
+    int? page,
+    int? pageSize,
+    String? category,
+    String? brand,
+    int? minPrice,
+    int? maxPrice,
+    double? minRating,
+    String? seller,
+    String? sortBy,
+    String? sortOrder,
+    String? searchQuery,
+  }) async {
+    emit(LoadingHomeState());
     try {
-      final response = await _repository.fetch({
-        "page": page,
-        "pageSize": _pageSize,
-      });
-
+      final response = await _repository.fetch(
+        page: page,
+        pageSize: pageSize,
+        category: category,
+        brand: brand,
+        minPrice: minPrice,
+        maxPrice: maxPrice,
+        minRating: minRating,
+        seller: seller,
+        sortBy: sortBy,
+        sortOrder: sortOrder,
+        searchQuery: searchQuery,
+      );
       if (response.code == 200) {
         emit(LoadedHomeState(
-          data: Home(
-            data: response.data.products,
-            loading: false,
-            error: null,
-          ),
-        ));
+          products: response.data.products,
+          total: response.data.total,
+          page: response.data.page,
+          pageSize: response.data.pageSize,
+          ));
       } else {
         emit(ErrorHomeState(
-          errorHome: Home(
-            data: [],
-            loading: false,
-            error: response.message,
+          error: HomeError(
+            message: response.message,
+            isOffline: response.message.toString().toLowerCase().contains("socket")
           ),
-          offline: response.message
-                  ?.toLowerCase()
-                  .contains("socket") ??
-              false,
+          
         ));
       }
-    } catch (e) {
+    } catch(e) {
       emit(ErrorHomeState(
-        errorHome: Home(
-          data: [],
-          loading: false,
-          error: e.toString(),
+        error: HomeError(
+          message: e.toString(),
+          isOffline: e.toString().toLowerCase().contains("socket")
         ),
-        offline: e.toString().toLowerCase().contains("socket"),
       ));
     }
   }
 
-  Future<void> reload() async {
-    emit(LoadingHomeState(
-      loadingHome: Home(
-        data: [],
-        loading: true,
-        error: null,
-      ),
-    ));
-
+  Future<void> getById(int id) async {
+    emit(LoadingHomeState());
     try {
-      final response = await _repository.fetch({
-        "page": _currentPage,
-        "pageSize": _pageSize,
-      });
-
+      final response = await _repository.getById(id);
       if (response.code == 200) {
         emit(LoadedHomeState(
-          data: Home(
-            data: response.data.products,
-            loading: false,
-            error: null,
-          ),
+          products: const [],
+          selectedProduct: response.data,
         ));
       } else {
         emit(ErrorHomeState(
-          errorHome: Home(
-            data: [],
-            loading: false,
-            error: response.message,
-          ),
-          offline: response.message
-                  ?.toLowerCase()
-                  .contains("socket") ??
-              false,
+          error: HomeError(
+            message: response.message,
+            isOffline: response.message.toString().toLowerCase().contains("socket")
+          )
         ));
       }
-    } catch (e) {
+    } catch(e) {
       emit(ErrorHomeState(
-        errorHome: Home(
-          data: [],
-          loading: false,
-          error: e.toString(),
+        error: HomeError(
+          message: e.toString(),
+          isOffline: e.toString().toLowerCase().contains("socket")
         ),
-        offline: e.toString().toLowerCase().contains("socket"),
       ));
     }
   }
 }
 
-class Home {
-  final List<ProductData> data;
-  final bool loading;
-  final String? error;
 
-  Home({
-    required this.data,
-    required this.loading,
-    required this.error,
+class HomeError {
+
+  String? message;
+  bool? isOffline;
+
+  HomeError({
+    required this.message,
+    required this.isOffline
   });
 }

@@ -128,13 +128,13 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function( Home? loadingHome)?  loading,TResult Function( Home? data)?  loaded,TResult Function( Home? errorHome,  bool? offline)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<ProductData> products,  ProductData? selectedProduct,  int? total,  int? page,  int? pageSize)?  loaded,TResult Function( HomeError error)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case InitialHomeState() when initial != null:
 return initial();case LoadingHomeState() when loading != null:
-return loading(_that.loadingHome);case LoadedHomeState() when loaded != null:
-return loaded(_that.data);case ErrorHomeState() when error != null:
-return error(_that.errorHome,_that.offline);case _:
+return loading();case LoadedHomeState() when loaded != null:
+return loaded(_that.products,_that.selectedProduct,_that.total,_that.page,_that.pageSize);case ErrorHomeState() when error != null:
+return error(_that.error);case _:
   return orElse();
 
 }
@@ -152,13 +152,13 @@ return error(_that.errorHome,_that.offline);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function( Home? loadingHome)  loading,required TResult Function( Home? data)  loaded,required TResult Function( Home? errorHome,  bool? offline)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<ProductData> products,  ProductData? selectedProduct,  int? total,  int? page,  int? pageSize)  loaded,required TResult Function( HomeError error)  error,}) {final _that = this;
 switch (_that) {
 case InitialHomeState():
 return initial();case LoadingHomeState():
-return loading(_that.loadingHome);case LoadedHomeState():
-return loaded(_that.data);case ErrorHomeState():
-return error(_that.errorHome,_that.offline);case _:
+return loading();case LoadedHomeState():
+return loaded(_that.products,_that.selectedProduct,_that.total,_that.page,_that.pageSize);case ErrorHomeState():
+return error(_that.error);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -175,13 +175,13 @@ return error(_that.errorHome,_that.offline);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function( Home? loadingHome)?  loading,TResult? Function( Home? data)?  loaded,TResult? Function( Home? errorHome,  bool? offline)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<ProductData> products,  ProductData? selectedProduct,  int? total,  int? page,  int? pageSize)?  loaded,TResult? Function( HomeError error)?  error,}) {final _that = this;
 switch (_that) {
 case InitialHomeState() when initial != null:
 return initial();case LoadingHomeState() when loading != null:
-return loading(_that.loadingHome);case LoadedHomeState() when loaded != null:
-return loaded(_that.data);case ErrorHomeState() when error != null:
-return error(_that.errorHome,_that.offline);case _:
+return loading();case LoadedHomeState() when loaded != null:
+return loaded(_that.products,_that.selectedProduct,_that.total,_that.page,_that.pageSize);case ErrorHomeState() when error != null:
+return error(_that.error);case _:
   return null;
 
 }
@@ -225,76 +225,52 @@ String toString() {
 
 
 class LoadingHomeState implements HomeState {
-  const LoadingHomeState({required this.loadingHome});
+  const LoadingHomeState();
   
 
- final  Home? loadingHome;
 
-/// Create a copy of HomeState
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$LoadingHomeStateCopyWith<LoadingHomeState> get copyWith => _$LoadingHomeStateCopyWithImpl<LoadingHomeState>(this, _$identity);
+
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadingHomeState&&(identical(other.loadingHome, loadingHome) || other.loadingHome == loadingHome));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadingHomeState);
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,loadingHome);
+int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'HomeState.loading(loadingHome: $loadingHome)';
+  return 'HomeState.loading()';
 }
 
 
 }
 
-/// @nodoc
-abstract mixin class $LoadingHomeStateCopyWith<$Res> implements $HomeStateCopyWith<$Res> {
-  factory $LoadingHomeStateCopyWith(LoadingHomeState value, $Res Function(LoadingHomeState) _then) = _$LoadingHomeStateCopyWithImpl;
-@useResult
-$Res call({
- Home? loadingHome
-});
 
 
-
-
-}
-/// @nodoc
-class _$LoadingHomeStateCopyWithImpl<$Res>
-    implements $LoadingHomeStateCopyWith<$Res> {
-  _$LoadingHomeStateCopyWithImpl(this._self, this._then);
-
-  final LoadingHomeState _self;
-  final $Res Function(LoadingHomeState) _then;
-
-/// Create a copy of HomeState
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? loadingHome = freezed,}) {
-  return _then(LoadingHomeState(
-loadingHome: freezed == loadingHome ? _self.loadingHome : loadingHome // ignore: cast_nullable_to_non_nullable
-as Home?,
-  ));
-}
-
-
-}
 
 /// @nodoc
 
 
 class LoadedHomeState implements HomeState {
-  const LoadedHomeState({required this.data});
+  const LoadedHomeState({required final  List<ProductData> products, this.selectedProduct, this.total, this.page, this.pageSize}): _products = products;
   
 
- final  Home? data;
+ final  List<ProductData> _products;
+ List<ProductData> get products {
+  if (_products is EqualUnmodifiableListView) return _products;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_products);
+}
+
+ final  ProductData? selectedProduct;
+ final  int? total;
+ final  int? page;
+ final  int? pageSize;
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
@@ -306,16 +282,16 @@ $LoadedHomeStateCopyWith<LoadedHomeState> get copyWith => _$LoadedHomeStateCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadedHomeState&&(identical(other.data, data) || other.data == data));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadedHomeState&&const DeepCollectionEquality().equals(other._products, _products)&&(identical(other.selectedProduct, selectedProduct) || other.selectedProduct == selectedProduct)&&(identical(other.total, total) || other.total == total)&&(identical(other.page, page) || other.page == page)&&(identical(other.pageSize, pageSize) || other.pageSize == pageSize));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,data);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_products),selectedProduct,total,page,pageSize);
 
 @override
 String toString() {
-  return 'HomeState.loaded(data: $data)';
+  return 'HomeState.loaded(products: $products, selectedProduct: $selectedProduct, total: $total, page: $page, pageSize: $pageSize)';
 }
 
 
@@ -326,11 +302,11 @@ abstract mixin class $LoadedHomeStateCopyWith<$Res> implements $HomeStateCopyWit
   factory $LoadedHomeStateCopyWith(LoadedHomeState value, $Res Function(LoadedHomeState) _then) = _$LoadedHomeStateCopyWithImpl;
 @useResult
 $Res call({
- Home? data
+ List<ProductData> products, ProductData? selectedProduct, int? total, int? page, int? pageSize
 });
 
 
-
+$ProductDataCopyWith<$Res>? get selectedProduct;
 
 }
 /// @nodoc
@@ -343,25 +319,40 @@ class _$LoadedHomeStateCopyWithImpl<$Res>
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? data = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? products = null,Object? selectedProduct = freezed,Object? total = freezed,Object? page = freezed,Object? pageSize = freezed,}) {
   return _then(LoadedHomeState(
-data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
-as Home?,
+products: null == products ? _self._products : products // ignore: cast_nullable_to_non_nullable
+as List<ProductData>,selectedProduct: freezed == selectedProduct ? _self.selectedProduct : selectedProduct // ignore: cast_nullable_to_non_nullable
+as ProductData?,total: freezed == total ? _self.total : total // ignore: cast_nullable_to_non_nullable
+as int?,page: freezed == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
+as int?,pageSize: freezed == pageSize ? _self.pageSize : pageSize // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 
+/// Create a copy of HomeState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ProductDataCopyWith<$Res>? get selectedProduct {
+    if (_self.selectedProduct == null) {
+    return null;
+  }
 
+  return $ProductDataCopyWith<$Res>(_self.selectedProduct!, (value) {
+    return _then(_self.copyWith(selectedProduct: value));
+  });
+}
 }
 
 /// @nodoc
 
 
 class ErrorHomeState implements HomeState {
-  const ErrorHomeState({required this.errorHome, required this.offline});
+  const ErrorHomeState({required this.error});
   
 
- final  Home? errorHome;
- final  bool? offline;
+ final  HomeError error;
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
@@ -373,16 +364,16 @@ $ErrorHomeStateCopyWith<ErrorHomeState> get copyWith => _$ErrorHomeStateCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ErrorHomeState&&(identical(other.errorHome, errorHome) || other.errorHome == errorHome)&&(identical(other.offline, offline) || other.offline == offline));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ErrorHomeState&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,errorHome,offline);
+int get hashCode => Object.hash(runtimeType,error);
 
 @override
 String toString() {
-  return 'HomeState.error(errorHome: $errorHome, offline: $offline)';
+  return 'HomeState.error(error: $error)';
 }
 
 
@@ -393,7 +384,7 @@ abstract mixin class $ErrorHomeStateCopyWith<$Res> implements $HomeStateCopyWith
   factory $ErrorHomeStateCopyWith(ErrorHomeState value, $Res Function(ErrorHomeState) _then) = _$ErrorHomeStateCopyWithImpl;
 @useResult
 $Res call({
- Home? errorHome, bool? offline
+ HomeError error
 });
 
 
@@ -410,11 +401,10 @@ class _$ErrorHomeStateCopyWithImpl<$Res>
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? errorHome = freezed,Object? offline = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? error = null,}) {
   return _then(ErrorHomeState(
-errorHome: freezed == errorHome ? _self.errorHome : errorHome // ignore: cast_nullable_to_non_nullable
-as Home?,offline: freezed == offline ? _self.offline : offline // ignore: cast_nullable_to_non_nullable
-as bool?,
+error: null == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as HomeError,
   ));
 }
 

@@ -1,55 +1,92 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+
 import 'package:yinni_mobile/core/base/di/dependency_injection.dart';
 import 'package:yinni_mobile/core/common/models/api_response.dart';
-import 'package:yinni_mobile/core/repositories/cache/database/app_database.dart';
 import 'package:yinni_mobile/features/main/data/models/product_list_api_response.dart';
-import 'package:yinni_mobile/features/main/data/services/product_service.dart';
+import 'package:yinni_mobile/features/main/data/models/product_data.dart';
+import 'package:yinni_mobile/features/main/data/services/home_service.dart';
 
 class HomeRepository {
-  HomeRepository(this._homeService, this._db);
+  HomeRepository(this._homeService);
 
   static HomeRepository create() =>
-      HomeRepository(injector.get(), injector.get());
+      HomeRepository(injector.get());
 
-  final ProductService _homeService;
-  final AppDatabase _db;
+  final HomeService _homeService;
 
   Future<ApiResponse<ProductListApiResponse>> fetch(
-    Map<String, dynamic> params,
+    {
+    int? page,
+    int? pageSize,
+    String? category,
+    String? brand,
+    int? minPrice,
+    int? maxPrice,
+    double? minRating,
+    String? seller,
+    String? sortBy,
+    String? sortOrder,
+    String? searchQuery,
+  }
   ) async {
     try {
-      final response = await _homeService.fetch(params);
+      final response = await _homeService.fetch(
+        page: page,
+        pageSize: pageSize,
+        category: category,
+        brand: brand,
+        minPrice: minPrice,
+        maxPrice: maxPrice,
+        minRating: minRating,
+        seller: seller,
+        sortBy: sortBy,
+        sortOrder: sortOrder,
+        searchQuery: searchQuery,
+      );
 
       if (!response.isSuccessful || response.body == null) {
         return ApiResponse<ProductListApiResponse>(
           code: response.statusCode,
-          message: response.error?.toString() ?? 'Failed to fetch product list',
+          message: response.error?.toString(),
           data: ProductListApiResponse.empty,
         );
-      }
-
-      final apiResponse = response.body!;
-
-      if (apiResponse.products.isNotEmpty == true) {
-        await _db.transaction(() async {
-          await _db.saveProducts(apiResponse.products);
-        });
       }
 
       return ApiResponse<ProductListApiResponse>(
         code: response.statusCode,
         message: null,
-        data: apiResponse,
+        data: response.body!,
       );
-    } catch (e, s) {
-      debugPrint("SignInRepository signIn error: $e");
-      debugPrintStack(stackTrace: s);
-
+    } catch (e) {
       return ApiResponse<ProductListApiResponse>(
         code: 500,
-        message: "An error occurred while fetching product list.",
+        message: e.toString(),
         data: ProductListApiResponse.empty,
+      );
+    }
+  }
+
+  Future<ApiResponse<ProductData>> getById(int id) async {
+    try {
+      final response = await _homeService.getById(id);
+      
+      if (!response.isSuccessful || response.body == null) {
+        return ApiResponse<ProductData>(
+          code: response.statusCode,
+          message: response.error?.toString(),
+          data: ProductData.empty,
+        );
+      }
+
+      return ApiResponse<ProductData>(
+        code: response.statusCode,
+        message: null,
+        data: response.body!,
+      );
+    } catch (e) {
+      return ApiResponse<ProductData>(
+        code: 500,
+        message: e.toString(),
+        data: ProductData.empty,
       );
     }
   }

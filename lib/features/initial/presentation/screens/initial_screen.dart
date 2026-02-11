@@ -156,10 +156,10 @@ class _InitialScreenState extends State<InitialScreen> with TickerProviderStateM
           return Expanded(
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 4),
-              height: 6,
+              height: 4,
               decoration: BoxDecoration(
                 color: Colors.black12,
-                borderRadius: BorderRadius.circular(3),
+                borderRadius: BorderRadius.circular(2),
               ),
               child: AnimatedBuilder(
                 animation: _progressControllers[index],

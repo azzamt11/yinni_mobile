@@ -9,7 +9,7 @@ import 'package:yinni_mobile/features/auth/data/services/auth_service.dart';
 import 'package:yinni_mobile/features/auth/domain/usecase/auth_repository.dart';
 import 'package:yinni_mobile/features/auth/domain/usecase/auth_usecase.dart';
 import 'package:yinni_mobile/features/main/data/models/product_list_api_response.dart';
-import 'package:yinni_mobile/features/main/data/services/product_service.dart';
+import 'package:yinni_mobile/features/main/data/services/home_service.dart';
 import 'package:yinni_mobile/features/main/domain/repository/home_repository.dart';
 import 'package:get_it/get_it.dart';
 
@@ -50,9 +50,9 @@ Future<void> injectServices() async {
   // --- 5. Chopper Services (Client-Specific) ---
   final sm = injector.get<ServiceManager>();
 
-  // Product Client (Port 8002)
-  injector.registerSingleton<ProductService>(
-    ProductService.create(sm.productClient),
+  // Home Client (Port 8002)
+  injector.registerSingleton<HomeService>(
+    HomeService.create(sm.productClient),
   );
 
   // Auth Client (Port 8000)
@@ -68,7 +68,6 @@ Future<void> injectServices() async {
   ));
 
   injector.registerLazySingleton<HomeRepository>(() => HomeRepository(
-    injector.get<ProductService>(),
-    injector.get<AppDatabase>(),
+    injector.get<HomeService>(),
   ));
 }
