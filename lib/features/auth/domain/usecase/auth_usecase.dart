@@ -6,6 +6,7 @@ import 'package:yinni_mobile/core/repositories/cache/database/app_database.dart'
 class AuthUsecase {
   final AppDatabase _db;
   String? _cachedToken;
+  static const String _hasOpenedBeforeKey = 'has_opened_before';
 
   AuthUsecase(this._db);
 
@@ -30,6 +31,15 @@ class AuthUsecase {
   Future<void> clearToken() async {
     await _db.clearAuth();
     _cachedToken = null;
+  }
+
+  Future<bool> hasOpenedBefore() async {
+    final value = await _db.getToken(_hasOpenedBeforeKey);
+    return value == 'true';
+  }
+
+  Future<void> markOpenedBefore() async {
+    await _db.saveToken(_hasOpenedBeforeKey, 'true');
   }
 
   FutureOr<Request> addAuthHeaderInterceptor(Request request) async {

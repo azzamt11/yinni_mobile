@@ -61,7 +61,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     child: BlocListener<AuthCubit, AuthState>(
                       listener: (context, state) {
                         if (state is LoadedAuthState) {
-                          context.router.replaceAll([const EmptyRoute()]);
+                          context.router.replaceAll([const HomeRoute()]);
                         }
                         if (state is ErrorAuthState) {
                           ScaffoldMessenger.of(context).showSnackBar(

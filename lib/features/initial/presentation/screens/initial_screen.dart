@@ -1,5 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:yinni_mobile/core/base/di/dependency_injection.dart';
+import 'package:yinni_mobile/core/base/router/app_router.dart';
+import 'package:yinni_mobile/features/auth/domain/usecase/auth_usecase.dart';
 import 'package:yinni_mobile/features/initial/presentation/widgets/onboarding_drawer.dart';
 
 @RoutePage()
@@ -11,6 +14,7 @@ class InitialScreen extends StatefulWidget {
 }
 
 class _InitialScreenState extends State<InitialScreen> with TickerProviderStateMixin {
+  late final AuthUsecase _authUsecase;
   late AnimationController _drawerController;
   late PageController _pageController;
   late List<AnimationController> _progressControllers;
@@ -25,6 +29,7 @@ class _InitialScreenState extends State<InitialScreen> with TickerProviderStateM
   void initState() {
     super.initState();
 
+    _authUsecase = injector.get<AuthUsecase>();
     _pageController = PageController();
 
     _progressControllers = List.generate(
@@ -40,7 +45,28 @@ class _InitialScreenState extends State<InitialScreen> with TickerProviderStateM
       duration: const Duration(milliseconds: 500),
     );
 
+    _redirectIfAuthenticated();
     _startProgress(0);
+  }
+
+  Future<void> _redirectIfAuthenticated() async {
+    await _authUsecase.initializeToken();
+    if (!mounted) return;
+
+    if ((_authUsecase.cachedToken ?? '').isNotEmpty) {
+      context.router.replaceAll([const HomeRoute()]);
+      return;
+    }
+
+    final hasOpenedBefore = await _authUsecase.hasOpenedBefore();
+    if (!mounted) return;
+
+    if (hasOpenedBefore) {
+      context.router.replaceAll([const SignInRoute()]);
+      return;
+    }
+
+    await _authUsecase.markOpenedBefore();
   }
 
   void _startProgress(int index) {
