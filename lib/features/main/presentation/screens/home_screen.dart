@@ -495,122 +495,122 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _flashSale(ThemeData t, double width) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Text(
-                "Flash Sale",
-                style: t.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-              ),
-              const SizedBox(width: 10),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFFE3E3),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Text(
-                  "02:14:07",
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFFE74C3C),
-                  ),
-                ),
-              ),
-              const Spacer(),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFFEDED),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Text(
-                  "60%",
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFFE74C3C),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          SizedBox(
-            height: width * 0.56,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: _flashItems.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 12),
-              itemBuilder: (context, index) {
-                final item = _flashItems[index];
-                return _flashCard(t, item);
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _flashSale(ThemeData t, double width) {
+  //   return Container(
+  //     padding: const EdgeInsets.all(12),
+  //     decoration: BoxDecoration(
+  //       color: Colors.white,
+  //       borderRadius: BorderRadius.circular(16),
+  //     ),
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         Row(
+  //           children: [
+  //             Text(
+  //               "Flash Sale",
+  //               style: t.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+  //             ),
+  //             const SizedBox(width: 10),
+  //             Container(
+  //               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+  //               decoration: BoxDecoration(
+  //                 color: const Color(0xFFFFE3E3),
+  //                 borderRadius: BorderRadius.circular(10),
+  //               ),
+  //               child: const Text(
+  //                 "02:14:07",
+  //                 style: TextStyle(
+  //                   fontSize: 11,
+  //                   fontWeight: FontWeight.w700,
+  //                   color: Color(0xFFE74C3C),
+  //                 ),
+  //               ),
+  //             ),
+  //             const Spacer(),
+  //             Container(
+  //               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+  //               decoration: BoxDecoration(
+  //                 color: const Color(0xFFFFEDED),
+  //                 borderRadius: BorderRadius.circular(10),
+  //               ),
+  //               child: const Text(
+  //                 "60%",
+  //                 style: TextStyle(
+  //                   fontSize: 11,
+  //                   fontWeight: FontWeight.w700,
+  //                   color: Color(0xFFE74C3C),
+  //                 ),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //         const SizedBox(height: 12),
+  //         SizedBox(
+  //           height: width * 0.56,
+  //           child: ListView.separated(
+  //             scrollDirection: Axis.horizontal,
+  //             itemCount: _flashItems.length,
+  //             separatorBuilder: (_, __) => const SizedBox(width: 12),
+  //             itemBuilder: (context, index) {
+  //               final item = _flashItems[index];
+  //               return _flashCard(t, item);
+  //             },
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  Widget _flashCard(ThemeData t, _ProductItem item) {
-    return Container(
-      width: 150,
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFF6F6),
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Center(
-                child: Icon(Icons.image, color: Colors.black26),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            item.title,
-            style: t.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 2),
-          Text(
-            item.price,
-            style: t.textTheme.labelLarge?.copyWith(
-              color: const Color(0xFFE74C3C),
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          Text(
-            item.oldPrice,
-            style: t.textTheme.labelSmall?.copyWith(
-              color: Colors.black38,
-              decoration: TextDecoration.lineThrough,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _flashCard(ThemeData t, _ProductItem item) {
+  //   return Container(
+  //     width: 150,
+  //     padding: const EdgeInsets.all(10),
+  //     decoration: BoxDecoration(
+  //       color: const Color(0xFFFFF6F6),
+  //       borderRadius: BorderRadius.circular(14),
+  //     ),
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         Expanded(
+  //           child: Container(
+  //             decoration: BoxDecoration(
+  //               color: Colors.white,
+  //               borderRadius: BorderRadius.circular(10),
+  //             ),
+  //             child: const Center(
+  //               child: Icon(Icons.image, color: Colors.black26),
+  //             ),
+  //           ),
+  //         ),
+  //         const SizedBox(height: 8),
+  //         Text(
+  //           item.title,
+  //           style: t.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+  //           maxLines: 1,
+  //           overflow: TextOverflow.ellipsis,
+  //         ),
+  //         const SizedBox(height: 2),
+  //         Text(
+  //           item.price,
+  //           style: t.textTheme.labelLarge?.copyWith(
+  //             color: const Color(0xFFE74C3C),
+  //             fontWeight: FontWeight.w800,
+  //           ),
+  //         ),
+  //         Text(
+  //           item.oldPrice,
+  //           style: t.textTheme.labelSmall?.copyWith(
+  //             color: Colors.black38,
+  //             decoration: TextDecoration.lineThrough,
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _bottomNav(ThemeData t) {
     return BottomNavigationBar(
