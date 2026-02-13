@@ -4,13 +4,14 @@ import 'package:google_fonts/google_fonts.dart';
 ThemeData buildTheme() {
   var baseTheme = ThemeData.light().copyWith(
     colorScheme: ColorScheme.fromSeed(
-      seedColor: const Color.fromARGB(255, 18, 153, 250),
+      seedColor: const Color(0xFF765ECE),
       brightness: Brightness.light,
     ),
     scaffoldBackgroundColor: Colors.white,
     canvasColor: Colors.white,
     appBarTheme: const AppBarTheme(backgroundColor: Colors.white),
-    primaryColor: const Color.fromARGB(255, 18, 153, 250),
+    primaryColor: const Color(0xFF765ECE),
+    cardColor: const Color(0xFFCB6CE6)
   );
 
   final customTextTheme = GoogleFonts.quicksandTextTheme(baseTheme.textTheme).copyWith(
@@ -31,7 +32,7 @@ ThemeData buildTheme() {
     ),
     titleLarge: GoogleFonts.quicksand(
       fontSize: 18.5,
-      fontWeight: FontWeight.w400,
+      fontWeight: FontWeight.w600,
       letterSpacing: 0.2,
     ),
     titleMedium: GoogleFonts.quicksand(
@@ -46,18 +47,18 @@ ThemeData buildTheme() {
     ),
     bodyLarge: GoogleFonts.quicksand(
       fontSize: 15,
-      fontWeight: FontWeight.w400,
+      fontWeight: FontWeight.w600,
       letterSpacing: 0.2,
     ),
     bodyMedium: GoogleFonts.quicksand(
-      fontSize: 12,
-      fontWeight: FontWeight.w500,
+      fontSize: 13.5,
+      fontWeight: FontWeight.w600,
       letterSpacing: 0.2,
       height: 1.3
     ),
     bodySmall: GoogleFonts.quicksand(
       fontSize: 11,
-      fontWeight: FontWeight.w400,
+      fontWeight: FontWeight.w600,
       letterSpacing: 0.2,
     ),
   );

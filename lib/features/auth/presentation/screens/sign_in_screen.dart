@@ -3,6 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:yinni_mobile/core/base/router/app_router.dart';
+import 'package:yinni_mobile/core/common/widgets/app_input_field.dart';
 import 'package:yinni_mobile/features/auth/presentation/blocs/auth_cubit.dart';
 
 
@@ -16,16 +17,47 @@ class SignInScreen extends StatefulWidget {
 
 class _SignInScreenState extends State<SignInScreen> {
   final _formKey = GlobalKey<FormState>();
+  late AuthCubit _authCubit;
+  bool _isCubitInitialized = false;
+  ScaffoldMessengerState? _scaffoldMessenger;
 
   String _email = '';
   String _password = '';
-  bool _passwordVisible = false;
+
+  void _showErrorSnackBar(String message) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final messenger = _scaffoldMessenger;
+      if (messenger == null) return;
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(message)));
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _scaffoldMessenger = ScaffoldMessenger.maybeOf(context);
+    if (!_isCubitInitialized) {
+      _authCubit = AuthCubit.create(context);
+      _isCubitInitialized = true;
+    }
+  }
+
+  @override
+  void dispose() {
+    if (_isCubitInitialized) {
+      _authCubit.close();
+    }
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final t = Theme.of(context);
-    return BlocProvider<AuthCubit>(
-      create: (_) => AuthCubit.create(context),
+    return BlocProvider<AuthCubit>.value(
+      value: _authCubit,
       child: Scaffold(
         body: LayoutBuilder(
           builder: (context, constraints) {
@@ -59,14 +91,14 @@ class _SignInScreenState extends State<SignInScreen> {
                   child: SingleChildScrollView(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: BlocListener<AuthCubit, AuthState>(
-                      listener: (context, state) {
+                      listener: (_, state) {
+                        if (!mounted) return;
                         if (state is LoadedAuthState) {
                           context.router.replaceAll([const HomeRoute()]);
+                          return;
                         }
                         if (state is ErrorAuthState) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(state.error?.message ?? "Seomthing went wrong")),
-                          );
+                          _showErrorSnackBar(state.error?.message ?? "Something went wrong");
                         }
                       },
                       child: Form(
@@ -85,21 +117,10 @@ class _SignInScreenState extends State<SignInScreen> {
                                 ),
                               ),
                             ),
-                            Text(
-                              "Sign In to Yinni",
-                              style: t.textTheme.headlineSmall
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              "Enjoy shopping with ease",
-                              style: t.textTheme.titleMedium,
-                              textAlign: TextAlign.center,
-                            ),
                             const SizedBox(height: 40),
                             _label("Email", t),
                             const SizedBox(height: 8),
-                            _inputField(
-                              t: t,
+                            AppInputField(
                               hint: "Email",
                               keyboardType: TextInputType.emailAddress,
                               onSaved: (v) => _email = v!,
@@ -109,8 +130,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             const SizedBox(height: 24),
                             _label("Password", t),
                             const SizedBox(height: 8),
-                            _inputField(
-                              t: t,
+                            AppInputField(
                               hint: "Password",
                               obscureText: true,
                               onSaved: (v) => _password = v!,
@@ -123,7 +143,10 @@ class _SignInScreenState extends State<SignInScreen> {
                               alignment: Alignment.centerRight,
                               child: TextButton(
                                 onPressed: () {},
-                                child: const Text("Reset Password"),
+                                child: Text(
+                                  "Reset Password",
+                                  style: t.textTheme.bodyMedium?.copyWith(color: Colors.black)
+                                ),
                               ),
                             ),
                             const SizedBox(height: 24),
@@ -147,6 +170,9 @@ class _SignInScreenState extends State<SignInScreen> {
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(14),
                                       ),
+                                    ).copyWith(
+                                      splashFactory: InkRipple.splashFactory,
+                                      overlayColor: const WidgetStatePropertyAll(Colors.white12),
                                     ),
                                     child: isLoading ? Center(
                                       child: SizedBox(
@@ -207,86 +233,4 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
-  Widget _inputField({
-    required String hint,
-    required ThemeData t,
-    bool obscureText = false,
-    TextInputType? keyboardType,
-    FormFieldValidator<String>? validator,
-    FormFieldSetter<String>? onSaved,
-    Iterable<String>? autofillHints,
-  }) {
-    final isPassword = obscureText;
-
-    return TextFormField(
-      style: t.textTheme.bodyLarge?.copyWith(
-        color: Colors.grey.shade800,
-      ),
-      obscureText: isPassword && !_passwordVisible,
-      keyboardType: keyboardType,
-      validator: validator,
-      onSaved: onSaved,
-      autofillHints: autofillHints,
-      enableSuggestions: !isPassword,
-      autocorrect: !isPassword,
-      decoration: InputDecoration(
-        hintText: hint,
-        floatingLabelBehavior: FloatingLabelBehavior.never,
-        filled: true,
-        fillColor: Colors.white,
-
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 12,
-          vertical: 7,
-        ),
-
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(
-            color: Colors.black12,
-            width: 0.7,
-          ),
-        ),
-
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(
-            color: t.primaryColor,
-            width: 1.2,
-          ),
-        ),
-
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(
-            color: Colors.redAccent,
-          ),
-        ),
-
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(
-            color: Colors.redAccent,
-            width: 1.2,
-          ),
-        ),
-
-        suffixIcon: isPassword
-        ? IconButton(
-            icon: Icon(
-              _passwordVisible
-                  ? Icons.visibility
-                  : Icons.visibility_off,
-              color: Colors.grey,
-            ),
-            onPressed: () {
-              setState(() {
-                _passwordVisible = !_passwordVisible;
-              });
-            },
-          )
-        : null,
-      ),
-    );
-  }
 }

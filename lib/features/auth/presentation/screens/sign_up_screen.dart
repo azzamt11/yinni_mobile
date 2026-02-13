@@ -3,6 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:yinni_mobile/core/base/router/app_router.dart';
+import 'package:yinni_mobile/core/common/widgets/app_input_field.dart';
 import 'package:yinni_mobile/features/auth/presentation/blocs/auth_cubit.dart';
 
 
@@ -16,22 +17,41 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
+  late AuthCubit _authCubit;
+  bool _isCubitInitialized = false;
 
   String _name = '';
   String _email = '';
   String? _password = '';
   String _passwordConf = '';
-  bool _passwordVisible = false;
-  bool _passwordConfVisible = false;
 
-  TextEditingController _passwordController = TextEditingController();
-  TextEditingController _passwordConfController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _passwordConfController = TextEditingController();
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isCubitInitialized) {
+      _authCubit = AuthCubit.create(context);
+      _isCubitInitialized = true;
+    }
+  }
+
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    _passwordConfController.dispose();
+    if (_isCubitInitialized) {
+      _authCubit.close();
+    }
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final t = Theme.of(context);
-    return BlocProvider<AuthCubit>(
-      create: (_) => AuthCubit.create(context),
+    return BlocProvider<AuthCubit>.value(
+      value: _authCubit,
       child: Scaffold(
         body: LayoutBuilder(
           builder: (context, constraints) {
@@ -66,14 +86,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: BlocListener<AuthCubit, AuthState>(
                       listener: (context, state) {
+                        if (!mounted) return;
                         if (state is LoadedAuthState) {
-                          ScaffoldMessenger.of(context).showSnackBar(
+                          ScaffoldMessenger.maybeOf(context)?.showSnackBar(
                             SnackBar(content: Text("Please, sign in again")),
                           );
                           context.router.replaceAll([const SignInRoute()]);
+                          return;
                         }
                         if (state is ErrorAuthState) {
-                          ScaffoldMessenger.of(context).showSnackBar(
+                          ScaffoldMessenger.maybeOf(context)?.showSnackBar(
                             SnackBar(content: Text(state.error?.message ?? "Seomthing went wrong")),
                           );
                         }
@@ -94,21 +116,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 ),
                               ),
                             ),
-                            Text(
-                              "Sign Up to Yinni",
-                              style: t.textTheme.headlineSmall
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              "Shop online all you want",
-                              style: t.textTheme.titleMedium,
-                              textAlign: TextAlign.center,
-                            ),
                             const SizedBox(height: 40),
                             _label("Name", t),
                             const SizedBox(height: 8),
-                            _inputField(
-                              t: t,
+                            AppInputField(
                               hint: "Name",
                               keyboardType: TextInputType.emailAddress,
                               onSaved: (v) => _name = v!,
@@ -118,8 +129,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             const SizedBox(height: 24),
                             _label("Email", t),
                             const SizedBox(height: 8),
-                            _inputField(
-                              t: t,
+                            AppInputField(
                               hint: "Email",
                               keyboardType: TextInputType.emailAddress,
                               onSaved: (v) => _email = v!,
@@ -129,10 +139,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             const SizedBox(height: 24),
                             _label("Password", t),
                             const SizedBox(height: 8),
-                            _inputField(
-                              t: t,
+                            AppInputField(
                               hint: "Password",
-                              passwordFieldType: PasswordFieldType.password,
+                              obscureText: true,
                               onSaved: (v) => _password = v!,
                               controller: _passwordController,
                               validator: (v) => v == null || v.length < 6
@@ -144,10 +153,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             const SizedBox(height: 24),
                             _label("Password Confirmation", t),
                             const SizedBox(height: 8),
-                            _inputField(
-                              t: t,
+                            AppInputField(
                               hint: "Confirm Password",
-                              passwordFieldType: PasswordFieldType.confirmPassword,
+                              obscureText: true,
                               onSaved: (v) => _passwordConf = v!,
                               controller: _passwordConfController,
                               validator: (v) => v == null || v.length < 6
@@ -237,97 +245,4 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  Widget _inputField({
-    required String hint,
-    required ThemeData t,
-    TextInputType? keyboardType,
-    FormFieldValidator<String>? validator,
-    FormFieldSetter<String>? onSaved,
-    Iterable<String>? autofillHints,
-    PasswordFieldType? passwordFieldType,
-    TextEditingController? controller
-  }) {
-    final isPassword = passwordFieldType != null;
-
-    bool isVisible;
-    VoidCallback? toggleVisibility;
-
-    if (passwordFieldType == PasswordFieldType.password) {
-      isVisible = _passwordVisible;
-      toggleVisibility = () {
-        setState(() {
-          _passwordVisible = !_passwordVisible;
-        });
-      };
-    } else if (passwordFieldType == PasswordFieldType.confirmPassword) {
-      isVisible = _passwordConfVisible;
-      toggleVisibility = () {
-        setState(() {
-          _passwordConfVisible = !_passwordConfVisible;
-        });
-      };
-    } else {
-      isVisible = true;
-    }
-
-    return TextFormField(
-      style: t.textTheme.bodyLarge?.copyWith(
-        color: Colors.grey.shade800,
-      ),
-      obscureText: isPassword && !isVisible,
-      keyboardType: keyboardType,
-      validator: validator,
-      onSaved: onSaved,
-      autofillHints: autofillHints,
-      enableSuggestions: !isPassword,
-      autocorrect: !isPassword,
-      controller: controller,
-      decoration: InputDecoration(
-        hintText: hint,
-        floatingLabelBehavior: FloatingLabelBehavior.never,
-        filled: true,
-        fillColor: Colors.white,
-
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 12,
-          vertical: 7,
-        ),
-
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Colors.black12, width: 0.7),
-        ),
-
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: t.primaryColor, width: 1.2),
-        ),
-
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Colors.redAccent),
-        ),
-
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Colors.redAccent, width: 1.2),
-        ),
-
-        suffixIcon: isPassword
-            ? IconButton(
-                icon: Icon(
-                  isVisible ? Icons.visibility : Icons.visibility_off,
-                  color: Colors.grey,
-                ),
-                onPressed: toggleVisibility,
-              )
-            : null,
-      ),
-    );
-  }
-}
-
-enum PasswordFieldType {
-  password,
-  confirmPassword,
 }

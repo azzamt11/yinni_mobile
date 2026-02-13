@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:yinni_mobile/core/common/widgets/app_input_field.dart';
 import 'package:yinni_mobile/features/main/presentation/blocs/home_cubit.dart';
 
 @RoutePage()
@@ -134,9 +135,17 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Row(
         children: [
           Expanded(
-            child: _inputField(
-              t: t,
+            child: const AppInputField(
               hint: "Seacrh",
+              fillColor: Color(0xFFF7F7F9),
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 8,
+              ),
+              borderRadius: 12,
+              enabledBorderColor: Colors.black,
+              enabledBorderWidth: 1,
+              prefixIcon: Icon(Icons.search, size: 20, color: Colors.black45),
             ),
           ),
           SizedBox(width: 10),
@@ -741,64 +750,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
     );
   }
-
-
-  Widget _inputField({
-      required ThemeData t,
-      required String hint,
-      TextInputType? keyboardType,
-      FormFieldValidator<String>? validator,
-      FormFieldSetter<String>? onSaved,
-      Iterable<String>? autofillHints,
-      TextEditingController? controller
-    }) {
-  
-      return TextFormField(
-        style: t.textTheme.bodyLarge?.copyWith(
-          color: Colors.grey.shade800,
-        ),
-        obscureText: false,
-        keyboardType: keyboardType,
-        validator: validator,
-        onSaved: onSaved,
-        autofillHints: autofillHints,
-        enableSuggestions: true,
-        autocorrect: true,
-        controller: controller,
-        decoration: InputDecoration(
-          hintText: hint,
-          floatingLabelBehavior: FloatingLabelBehavior.never,
-          filled: true,
-          fillColor: const Color(0xFFF7F7F9),
-
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 12,
-            vertical: 8,
-          ),
-
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.black, width: 1),
-          ),
-
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: t.primaryColor, width: 1.2),
-          ),
-
-          errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: Colors.redAccent),
-          ),
-
-          focusedErrorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: Colors.redAccent, width: 1.2),
-          ),
-          prefixIcon: const Icon(Icons.search, size: 20, color: Colors.black45),
-        ),
-      );
-    }
 }
 
 class _QuickItem {
@@ -840,4 +791,3 @@ class _GridItem {
     required this.subtitle,
   });
 }
-

@@ -25,14 +25,14 @@ class AuthCubit extends Cubit<AuthState> {
         "email": email,
         "password": password
       });
-      if(response.code == 200) {
+      if(response.code >= 200 && response.code < 300) {
         emit(LoadedAuthState(
           data: response.data.user,
           ));
       } else {
         emit(ErrorAuthState(
           error: Error(
-            message: response.message,
+            message: response.message ?? "Something went wrong",
             isOffline: response.message.toString().toLowerCase().contains("socket")
           ),
           
@@ -57,14 +57,14 @@ class AuthCubit extends Cubit<AuthState> {
         "password": password,
         "name": name
       });
-      if(response.code == 200) {
+      if(response.code >= 200 && response.code < 300) {
         emit(LoadedAuthState(
           data: UserData(id: int.parse(response.data.userId ?? "0")),
         ));
       } else {
         emit(ErrorAuthState(
           error: Error(
-            message: response.message,
+            message: response.message ?? "Something went wrong",
             isOffline: response.message.toString().toLowerCase().contains("socket")
           )
         ));
