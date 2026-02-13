@@ -1,7 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:yinni_mobile/core/base/di/dependency_injection.dart';
+import 'package:yinni_mobile/core/base/router/app_router.dart';
+import 'package:yinni_mobile/core/repositories/cache/volume/image_cache_manager.dart';
 import 'package:yinni_mobile/core/common/widgets/app_input_field.dart';
+import 'package:yinni_mobile/features/auth/domain/usecase/auth_usecase.dart';
 import 'package:yinni_mobile/features/main/presentation/blocs/home_cubit.dart';
 
 @RoutePage()
@@ -16,22 +21,26 @@ class _HomeScreenState extends State<HomeScreen> {
   final PageController _bannerController = PageController();
   int _bannerIndex = 0;
   final ScrollController _scrollController = ScrollController();
+  final AuthUsecase _authUsecase = injector.get<AuthUsecase>();
+  final ImageUrlCacheManager _imageCacheManager = injector.get<ImageUrlCacheManager>();
+  int _selectedBottomNav = 0;
+  bool _isLoggingOut = false;
 
   final List<_QuickItem> _quickItems = const [
-    _QuickItem(icon: Icons.account_balance_wallet, label: "Rp5.160"),
-    _QuickItem(icon: Icons.payments, label: "Rp5.343"),
-    _QuickItem(icon: Icons.confirmation_num, label: "Cek Kupon"),
-    _QuickItem(icon: Icons.local_shipping, label: "Dikirim ke R"),
+    _QuickItem(icon: Icons.account_balance_wallet, label: "\$5"),
+    _QuickItem(icon: Icons.payments, label: "\$12"),
+    _QuickItem(icon: Icons.confirmation_num, label: "Coupon Check"),
+    _QuickItem(icon: Icons.local_shipping, label: "Shipping"),
   ];
 
   final List<_FeatureItem> _featureItems = const [
-    _FeatureItem(icon: Icons.bolt, label: "Aktifkan\nLagi"),
-    _FeatureItem(icon: Icons.flash_on, label: "Top-Up &\nTagihan"),
-    _FeatureItem(icon: Icons.storefront, label: "Mall"),
-    _FeatureItem(icon: Icons.percent, label: "Dapetin\nRp800rb"),
-    _FeatureItem(icon: Icons.schedule, label: "Paylater"),
-    _FeatureItem(icon: Icons.credit_card, label: "Cicil Tanpa\nBiaya"),
-    _FeatureItem(icon: Icons.account_balance_wallet, label: "GoPay\nLater"),
+    _FeatureItem(icon: "assets/features/home/reactivate.svg", label: "Reactivate"),
+    _FeatureItem(icon: "assets/features/home/topup.svg", label: "Top-Up"),
+    _FeatureItem(icon: "assets/features/home/mall.svg", label: "Mall"),
+    _FeatureItem(icon: "assets/features/home/discount.svg", label: "Discount"),
+    _FeatureItem(icon: "assets/features/home/reactivate.svg", label: "Paylater"),
+    _FeatureItem(icon: "assets/features/home/reactivate.svg", label: "Cicil Tanpa\nBiaya"),
+    _FeatureItem(icon: "assets/features/home/reactivate.svg", label: "GoPay\nLater"),
   ];
 
   final List<_CardItem> _continueItems = const [
@@ -72,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return BlocProvider<HomeCubit>(
       create: (_) => HomeCubit.create(context),
       child: Scaffold(
-        backgroundColor: const Color(0xFFF7F8FA),
+        backgroundColor: Colors.white,
         body: LayoutBuilder(
           builder: (context, constraints) {
             return Container(
@@ -137,7 +146,6 @@ class _HomeScreenState extends State<HomeScreen> {
           Expanded(
             child: const AppInputField(
               hint: "Seacrh",
-              fillColor: Color(0xFFF7F7F9),
               contentPadding: EdgeInsets.symmetric(
                 horizontal: 12,
                 vertical: 8,
@@ -170,14 +178,14 @@ class _HomeScreenState extends State<HomeScreen> {
             onPageChanged: (index) => setState(() => _bannerIndex = index),
             children: [
               _bannerCard(
-                title: "Top Up Diamonds\nMurahnya GGWP!",
+                title: "Top Up Diamonds",
                 subtitle: "29% Diamonds",
-                bg: const Color(0xFF8BB6E5),
+                bg: const Color.fromARGB(255, 20, 111, 209),
               ),
               _bannerCard(
-                title: "Promo Belanja\nPaling Panas!",
+                title: "The Hotest Selling Promo!",
                 subtitle: "Diskon s.d. 70%",
-                bg: const Color(0xFFE7A0A6),
+                bg: const Color.fromARGB(255, 233, 109, 120),
               ),
               _bannerCard(
                 title: "Gratis Ongkir\nSepuasnya",
@@ -214,17 +222,13 @@ class _HomeScreenState extends State<HomeScreen> {
     required Color bg,
   }) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 4),
+      margin: EdgeInsets.symmetric(horizontal: 4),
       decoration: BoxDecoration(
-        color: bg,
+        image: DecorationImage(
+          image: AssetImage("assets/features/home/background.jpg"),
+          fit: BoxFit.cover
+        ),
         borderRadius: BorderRadius.circular(14),
-        boxShadow: const [
-          BoxShadow(
-            blurRadius: 14,
-            offset: Offset(0, 8),
-            color: Color(0x22000000),
-          )
-        ],
       ),
       child: Stack(
         children: [
@@ -280,9 +284,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _quickRow(ThemeData t) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.transparent,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
@@ -298,15 +301,22 @@ class _HomeScreenState extends State<HomeScreen> {
     return Expanded(
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 4),
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         decoration: BoxDecoration(
-          color: const Color(0xFFF3F6FA),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              t.primaryColor,
+              t.cardColor
+            ],
+          ),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(item.icon, size: 16, color: t.primaryColor),
+            Icon(item.icon, size: 16, color: Colors.white),
             const SizedBox(width: 6),
             Flexible(
               child: Text(
@@ -314,6 +324,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 overflow: TextOverflow.ellipsis,
                 style: t.textTheme.labelLarge?.copyWith(
                   fontWeight: FontWeight.w700,
+                  color: Colors.white
                 ),
               ),
             )
@@ -341,7 +352,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: Colors.white,
                   shape: BoxShape.circle,
                 ),
-                child: Icon(item.icon, color: t.primaryColor),
+                child: SizedBox(
+                  height: 40,
+                  width: 40,
+                  child: SvgPicture.asset(
+                    item.icon,
+                    fit: BoxFit.contain,
+                  ),
+                )
               ),
               const SizedBox(height: 6),
               SizedBox(
@@ -579,6 +597,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _bottomNav(ThemeData t) {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
+      currentIndex: _selectedBottomNav,
+      onTap: _onBottomNavTap,
       selectedItemColor: t.primaryColor,
       unselectedItemColor: Colors.black54,
       items: const [
@@ -589,6 +609,38 @@ class _HomeScreenState extends State<HomeScreen> {
         BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: "Akun"),
       ],
     );
+  }
+
+  Future<void> _onBottomNavTap(int index) async {
+    if (index == 4) {
+      await _emergencyLogout();
+      return;
+    }
+
+    if (!mounted) return;
+    setState(() {
+      _selectedBottomNav = index;
+    });
+  }
+
+  Future<void> _emergencyLogout() async {
+    if (_isLoggingOut) return;
+
+    _isLoggingOut = true;
+    try {
+      await _authUsecase.clearToken();
+      await _imageCacheManager.emptyCache();
+
+      if (!mounted) return;
+      context.router.replaceAll([const SignInRoute()]);
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+        const SnackBar(content: Text('Logout failed. Please try again.')),
+      );
+    } finally {
+      _isLoggingOut = false;
+    }
   }
 
   Widget _gridSection(ThemeData t) {
@@ -718,7 +770,7 @@ class _HomeScreenState extends State<HomeScreen> {
           color: Colors.transparent,
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Icon(icon, size: 20, color: Colors.black87),
+        child: Icon(icon, size: 23, color: Colors.black87),
       ),
     );
   }
@@ -759,7 +811,7 @@ class _QuickItem {
 }
 
 class _FeatureItem {
-  final IconData icon;
+  final String icon;
   final String label;
   const _FeatureItem({required this.icon, required this.label});
 }
