@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,6 +22,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final PageController _bannerController = PageController();
   int _bannerIndex = 0;
+  Timer? _bannerAutoScrollTimer;
   final ScrollController _scrollController = ScrollController();
   final AuthUsecase _authUsecase = injector.get<AuthUsecase>();
   final ImageUrlCacheManager _imageCacheManager = injector.get<ImageUrlCacheManager>();
@@ -64,15 +67,31 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+    _startBannerAutoScroll();
     _fetchMore();
   }
 
   @override
   void dispose() {
+    _bannerAutoScrollTimer?.cancel();
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     _bannerController.dispose();
     super.dispose();
+  }
+
+  void _startBannerAutoScroll() {
+    _bannerAutoScrollTimer?.cancel();
+    _bannerAutoScrollTimer = Timer.periodic(const Duration(seconds: 4), (_) {
+      if (!mounted || !_bannerController.hasClients) return;
+
+      final nextPage = (_bannerIndex + 1) % 3;
+      _bannerController.animateToPage(
+        nextPage,
+        duration: const Duration(milliseconds: 380),
+        curve: Curves.easeInOut,
+      );
+    });
   }
 
   @override
@@ -115,8 +134,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             _quickRow(t),
                             const SizedBox(height: 14),
                             _featureRow(t),
-                            const SizedBox(height: 18),
-                            _sectionTitle(t, "Lanjut cek ini, yuk"),
                             const SizedBox(height: 10),
                             _continueRow(t),
                             const SizedBox(height: 16),
@@ -169,11 +186,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _bannerCarousel(double width) {
     final bannerHeight = width * 0.46;
-    return Column(
-      children: [
-        SizedBox(
-          height: bannerHeight,
-          child: PageView(
+    return SizedBox(
+      height: bannerHeight,
+      child: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          PageView(
             controller: _bannerController,
             onPageChanged: (index) => setState(() => _bannerIndex = index),
             children: [
@@ -188,31 +206,33 @@ class _HomeScreenState extends State<HomeScreen> {
                 bg: const Color.fromARGB(255, 233, 109, 120),
               ),
               _bannerCard(
-                title: "Gratis Ongkir\nSepuasnya",
-                subtitle: "Min. belanja Rp25rb",
+                title: "Free Delivery!",
+                subtitle: "With min. of transaction \$2",
                 bg: const Color(0xFF97D9C2),
               ),
             ],
           ),
-        ),
-        const SizedBox(height: 8),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(3, (index) {
-            final active = index == _bannerIndex;
-            return AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              margin: const EdgeInsets.symmetric(horizontal: 3),
-              height: 6,
-              width: active ? 18 : 6,
-              decoration: BoxDecoration(
-                color: active ? Colors.white : Colors.white54,
-                borderRadius: BorderRadius.circular(10),
-              ),
-            );
-          }),
-        ),
-      ],
+          Positioned(
+            bottom: 10,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(3, (index) {
+                final active = index == _bannerIndex;
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  margin: const EdgeInsets.symmetric(horizontal: 3),
+                  height: 6,
+                  width: active ? 18 : 6,
+                  decoration: BoxDecoration(
+                    color: active ? Colors.white : Colors.white54,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                );
+              }),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -380,15 +400,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _sectionTitle(ThemeData t, String text) {
-    return Text(
-      text,
-      style: t.textTheme.titleLarge?.copyWith(
-        fontWeight: FontWeight.w700,
-      ),
-    );
-  }
-
   Widget _continueRow(ThemeData t) {
     return SizedBox(
       height: 170,
@@ -401,14 +412,16 @@ class _HomeScreenState extends State<HomeScreen> {
           return Container(
             width: 140,
             padding: const EdgeInsets.all(10),
+            margin: const EdgeInsets.symmetric(vertical: 5),
             decoration: BoxDecoration(
+              border: Border.all(color: Colors.black26, width: 0.7),
               color: Colors.white,
               borderRadius: BorderRadius.circular(12),
               boxShadow: const [
                 BoxShadow(
-                  blurRadius: 10,
-                  offset: Offset(0, 6),
-                  color: Color(0x14000000),
+                  blurRadius: 3,
+                  offset: Offset(0, 3),
+                  color: Colors.black12
                 ),
               ],
             ),
@@ -444,16 +457,21 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _tabsRow(ThemeData t) {
-    return Row(
-      children: [
-        _tabChip(t, "For Abdullah", selected: true),
-        const SizedBox(width: 10),
-        _tabChip(t, "Mall"),
-        const SizedBox(width: 10),
-        _tabChip(t, "Elektronik"),
-        const SizedBox(width: 10),
-        _tabChip(t, "Handphone & Gadget"),
-      ],
+    return SizedBox(
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            _tabChip(t, "For Abdullah", selected: true),
+            const SizedBox(width: 10),
+            _tabChip(t, "Mall"),
+            const SizedBox(width: 10),
+            _tabChip(t, "Elektronik"),
+            const SizedBox(width: 10),
+            _tabChip(t, "Handphone & Gadget"),
+          ],
+        ),
+      )
     );
   }
 
