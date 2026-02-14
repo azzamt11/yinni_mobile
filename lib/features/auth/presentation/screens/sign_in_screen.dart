@@ -169,7 +169,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "New to Yinni? ",
+                              "Belum punya akun? ",
                               style: t.textTheme.bodyLarge?.copyWith(color: Colors.black87),
                             ),
                             GestureDetector(

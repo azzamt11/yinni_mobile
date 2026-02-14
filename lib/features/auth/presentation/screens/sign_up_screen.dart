@@ -126,10 +126,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               : null
                         ),
                         const SizedBox(height: 24),
-                        _label("Password Confirmation", t),
+                        _label("Konfirmasi Password", t),
                         const SizedBox(height: 8),
                         AppInputField(
-                          hint: "Confirm Password",
+                          hint: "Konfirmasi Password",
                           obscureText: true,
                           onSaved: (v) => _passwordConf = v!,
                           controller: _passwordConfController,
@@ -181,7 +181,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "New to Yinni? ",
+                              "Sudah punya akun? ",
                               style: t.textTheme.bodyLarge?.copyWith(color: Colors.black87),
                             ),
                             GestureDetector(

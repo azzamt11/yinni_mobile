@@ -30,19 +30,19 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isLoggingOut = false;
 
   final List<_QuickItem> _quickItems = const [
-    _QuickItem(icon: Icons.account_balance_wallet, label: "\$5"),
-    _QuickItem(icon: Icons.payments, label: "\$12"),
-    _QuickItem(icon: Icons.confirmation_num, label: "Coupon Check"),
-    _QuickItem(icon: Icons.local_shipping, label: "Shipping"),
+    _QuickItem(icon: Icons.account_balance_wallet, label: "Rp 50.000"),
+    _QuickItem(icon: Icons.payments, label: "Rp. 0"),
+    _QuickItem(icon: Icons.confirmation_num, label: "Kupon"),
+    _QuickItem(icon: Icons.local_shipping, label: "Dikirim"),
   ];
 
   final List<_FeatureItem> _featureItems = const [
-    _FeatureItem(icon: "assets/features/home/reactivate.svg", label: "Reactivate"),
+    _FeatureItem(icon: "assets/features/home/reactivate.svg", label: "Aktifkan Lagi"),
     _FeatureItem(icon: "assets/features/home/topup.svg", label: "Top-Up"),
     _FeatureItem(icon: "assets/features/home/mall.svg", label: "Mall"),
-    _FeatureItem(icon: "assets/features/home/discount.svg", label: "Discount"),
-    _FeatureItem(icon: "assets/features/home/reactivate.svg", label: "Paylater"),
-    _FeatureItem(icon: "assets/features/home/reactivate.svg", label: "Cicil Tanpa\nBiaya"),
+    _FeatureItem(icon: "assets/features/home/discount.svg", label: "Diskon"),
+    _FeatureItem(icon: "assets/features/home/paylater.svg", label: "Paylater"),
+    _FeatureItem(icon: "assets/features/home/credit_card.svg", label: "Kartu Kredit"),
     _FeatureItem(icon: "assets/features/home/reactivate.svg", label: "GoPay\nLater"),
   ];
 
@@ -103,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.white,
         body: LayoutBuilder(
           builder: (context, constraints) {
-            return Container(
+            return SizedBox(
               height: constraints.maxHeight,
               width: constraints.maxWidth,
               child: Stack(
@@ -111,7 +111,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   SafeArea(
                     child: SingleChildScrollView(
                       controller: _scrollController,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: BlocListener<HomeCubit, HomeState>(
                         listener: (context, state) {
                           if (state is LoadedHomeState) {
@@ -130,15 +129,15 @@ class _HomeScreenState extends State<HomeScreen> {
                             _topBar(t),
                             const SizedBox(height: 14),
                             _bannerCarousel(constraints.maxWidth),
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 20),
                             _quickRow(t),
                             const SizedBox(height: 14),
                             _featureRow(t),
                             const SizedBox(height: 10),
                             _continueRow(t),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 20),
                             _tabsRow(t),
-                            const SizedBox(height: 12),
+                            const SizedBox(height: 20),
                             _gridSection(t),
                           ],
                         )
@@ -156,7 +155,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _topBar(ThemeData t) {
-    return SizedBox(
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       height: 40,
       child: Row(
         children: [
@@ -186,52 +186,59 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _bannerCarousel(double width) {
     final bannerHeight = width * 0.46;
-    return SizedBox(
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
       height: bannerHeight,
-      child: Stack(
-        alignment: Alignment.bottomCenter,
-        children: [
-          PageView(
-            controller: _bannerController,
-            onPageChanged: (index) => setState(() => _bannerIndex = index),
-            children: [
-              _bannerCard(
-                title: "Top Up Diamonds",
-                subtitle: "29% Diamonds",
-                bg: const Color.fromARGB(255, 20, 111, 209),
-              ),
-              _bannerCard(
-                title: "The Hotest Selling Promo!",
-                subtitle: "Diskon s.d. 70%",
-                bg: const Color.fromARGB(255, 233, 109, 120),
-              ),
-              _bannerCard(
-                title: "Free Delivery!",
-                subtitle: "With min. of transaction \$2",
-                bg: const Color(0xFF97D9C2),
-              ),
-            ],
-          ),
-          Positioned(
-            bottom: 10,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(3, (index) {
-                final active = index == _bannerIndex;
-                return AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  margin: const EdgeInsets.symmetric(horizontal: 3),
-                  height: 6,
-                  width: active ? 18 : 6,
-                  decoration: BoxDecoration(
-                    color: active ? Colors.white : Colors.white54,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                );
-              }),
+      child: Container(
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            PageView(
+              controller: _bannerController,
+              onPageChanged: (index) => setState(() => _bannerIndex = index),
+              children: [
+                _bannerCard(
+                  title: "Top Up Diamonds",
+                  subtitle: "29% Diamonds",
+                  bg: const Color.fromARGB(255, 20, 111, 209),
+                ),
+                _bannerCard(
+                  title: "Promo paling hot!",
+                  subtitle: "Diskon s.d. 70%",
+                  bg: const Color.fromARGB(255, 233, 109, 120),
+                ),
+                _bannerCard(
+                  title: "Gratis Ongkir!",
+                  subtitle: "Minimal transaksi Rp50.000",
+                  bg: const Color(0xFF97D9C2),
+                ),
+              ],
             ),
-          ),
-        ],
+            Positioned(
+              bottom: 10,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(3, (index) {
+                  final active = index == _bannerIndex;
+                  return AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    margin: const EdgeInsets.symmetric(horizontal: 3),
+                    height: 6,
+                    width: active ? 18 : 6,
+                    decoration: BoxDecoration(
+                      color: active ? Colors.white : Colors.white54,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  );
+                }),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -242,13 +249,11 @@ class _HomeScreenState extends State<HomeScreen> {
     required Color bg,
   }) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 4),
       decoration: BoxDecoration(
         image: DecorationImage(
           image: AssetImage("assets/features/home/background.jpg"),
           fit: BoxFit.cover
         ),
-        borderRadius: BorderRadius.circular(14),
       ),
       child: Stack(
         children: [
@@ -303,59 +308,57 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _quickRow(ThemeData t) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: _quickItems.map((item) {
-          return _quickChip(t, item);
-        }).toList(),
+    return SizedBox(
+      height: 44,
+      child: ListView.separated(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        scrollDirection: Axis.horizontal,
+        itemCount: _quickItems.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        itemBuilder: (_, index) => _quickChip(t, _quickItems[index]),
       ),
     );
   }
 
   Widget _quickChip(ThemeData t, _QuickItem item) {
-    return Expanded(
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 4),
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              t.primaryColor,
-              t.cardColor
-            ],
-          ),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(item.icon, size: 16, color: Colors.white),
-            const SizedBox(width: 6),
-            Flexible(
-              child: Text(
-                item.label,
-                overflow: TextOverflow.ellipsis,
-                style: t.textTheme.labelLarge?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white
-                ),
-              ),
-            )
+    return Container(
+      constraints: const BoxConstraints(maxWidth: 148),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            t.primaryColor,
+            t.cardColor,
           ],
         ),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(item.icon, size: 16, color: Colors.white),
+          const SizedBox(width: 6),
+          Flexible(
+            child: Text(
+              item.label,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              style: t.textTheme.labelLarge?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _featureRow(ThemeData t) {
-    return SizedBox(
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       height: 100,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
@@ -407,48 +410,55 @@ class _HomeScreenState extends State<HomeScreen> {
         scrollDirection: Axis.horizontal,
         itemCount: _continueItems.length,
         separatorBuilder: (_, __) => const SizedBox(width: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         itemBuilder: (context, index) {
           final item = _continueItems[index];
-          return Container(
-            width: 140,
-            padding: const EdgeInsets.all(10),
-            margin: const EdgeInsets.symmetric(vertical: 5),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.black26, width: 0.7),
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: const [
-                BoxShadow(
-                  blurRadius: 3,
-                  offset: Offset(0, 3),
-                  color: Colors.black12
+          return SizedBox(
+            width: 138,
+            child: Container(
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: Colors.black26,
+                  width: 1,
                 ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF0F2F6),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const Center(
-                      child: Icon(Icons.image, color: Colors.black26),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF0F2F6),
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(12),
+                        ),
+                      ),
+                      child: const Center(
+                        child: Icon(Icons.image, color: Colors.black26),
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  item.title,
-                  style: t.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
-                ),
-                Text(
-                  item.subtitle,
-                  style: t.textTheme.labelMedium?.copyWith(color: Colors.black54),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 8, 8, 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item.title,
+                          style: t.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+                        ),
+                        Text(
+                          item.subtitle,
+                          style: t.textTheme.labelMedium?.copyWith(color: Colors.black54),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         },
@@ -457,21 +467,26 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _tabsRow(ThemeData t) {
+    const labels = <String>[
+      "Rekomendasi",
+      "Disukai",
+      "Aksesoris",
+      "Pakaian",
+    ];
+
     return SizedBox(
-      child: SingleChildScrollView(
+      height: 34,
+      child: ListView.separated(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            _tabChip(t, "For Abdullah", selected: true),
-            const SizedBox(width: 10),
-            _tabChip(t, "Mall"),
-            const SizedBox(width: 10),
-            _tabChip(t, "Elektronik"),
-            const SizedBox(width: 10),
-            _tabChip(t, "Handphone & Gadget"),
-          ],
+        itemCount: labels.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 10),
+        itemBuilder: (_, index) => _tabChip(
+          t,
+          labels[index],
+          selected: index == 0,
         ),
-      )
+      ),
     );
   }
 
@@ -482,7 +497,8 @@ class _HomeScreenState extends State<HomeScreen> {
         color: selected ? const Color(0xFFE6F6EF) : Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: selected ? const Color(0xFF27AE60) : const Color(0xFFE6EAF0),
+          color: selected ? const Color(0xFF27AE60) : Colors.black26,
+          width: 1
         ),
       ),
       child: Text(
@@ -668,6 +684,7 @@ class _HomeScreenState extends State<HomeScreen> {
         GridView.builder(
           itemCount: _gridItems.length,
           shrinkWrap: true,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
@@ -697,17 +714,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _gridCard(ThemeData t, _GridItem item) {
     return Container(
-      padding: const EdgeInsets.all(10),
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: const [
-          BoxShadow(
-            blurRadius: 10,
-            offset: Offset(0, 6),
-            color: Color(0x14000000),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: Colors.black26,
+          width: 1,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -716,33 +730,42 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Container(
               decoration: BoxDecoration(
                 color: const Color(0xFFF0F2F6),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(12),
+                ),
               ),
               child: const Center(
                 child: Icon(Icons.image, color: Colors.black26),
               ),
             ),
           ),
-          const SizedBox(height: 8),
-          Text(
-            item.title,
-            style: t.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 2),
-          Text(
-            item.price,
-            style: t.textTheme.labelLarge?.copyWith(
-              color: const Color(0xFFE74C3C),
-              fontWeight: FontWeight.w800,
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 8, 8, 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.title,
+                  style: t.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  item.price,
+                  style: t.textTheme.labelLarge?.copyWith(
+                    color: const Color(0xFFE74C3C),
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                Text(
+                  item.subtitle,
+                  style: t.textTheme.labelSmall?.copyWith(color: Colors.black54),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
             ),
-          ),
-          Text(
-            item.subtitle,
-            style: t.textTheme.labelSmall?.copyWith(color: Colors.black54),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),
