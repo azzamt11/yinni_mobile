@@ -51,7 +51,7 @@ class OnboardingDrawer extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    'Let\'s Shopping with Yinni...',
+                    'Ayo berbelanja dengan Yinni...',
                     style: t.textTheme.titleMedium?.copyWith(color: t.primaryColor),
                     textAlign: TextAlign.center,
                   ),
@@ -73,7 +73,7 @@ class OnboardingDrawer extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        "Get Started",
+                        "Mulai",
                         style: t.textTheme.titleMedium?.copyWith(
                           color: Colors.white,
                         ),

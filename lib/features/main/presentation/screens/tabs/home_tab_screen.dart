@@ -23,6 +23,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
   int _bannerIndex = 0;
   bool _isPaginating = false;
   static const int _bannerCount = 3;
+  static const String _errorAsset = "assets/features/home/error.svg";
 
   final List<_QuickItem> _quickItems = const [
     _QuickItem(icon: Icons.account_balance_wallet, label: "Rp 50.000"),
@@ -53,7 +54,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
     _homeCubit = HomeCubit.create(context);
     _scrollController.addListener(_onScroll);
     _startBannerAutoSlide();
-    _homeCubit.fetch(page: 1, pageSize: 10);
+    unawaited(_bootHomeData());
   }
 
   @override
@@ -64,6 +65,15 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
     _bannerController.dispose();
     _homeCubit.close();
     super.dispose();
+  }
+
+  Future<void> _bootHomeData() async {
+    await Future.wait([
+      _homeCubit.fetch(page: 1, pageSize: 10),
+      _homeCubit.fetchHighlight(),
+    ]);
+    if (!mounted) return;
+    setState(() {});
   }
 
   void _startBannerAutoSlide() {
@@ -93,26 +103,32 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
               );
             }
           },
-          child: SingleChildScrollView(
-            controller: _scrollController,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 10),
-                _topBar(t),
-                const SizedBox(height: 14),
-                _bannerCarousel(),
-                const SizedBox(height: 14),
-                _quickRow(t),
-                const SizedBox(height: 14),
-                _featureRow(t),
-                const SizedBox(height: 10),
-                _continueRow(t),
-                const SizedBox(height: 16),
-                _tabsRow(t),
-                const SizedBox(height: 20),
-                _gridSection(t),
-              ],
+          child: RefreshIndicator(
+            onRefresh: _bootHomeData,
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              physics: const AlwaysScrollableScrollPhysics(
+                parent: ClampingScrollPhysics(),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 10),
+                  _topBar(t),
+                  const SizedBox(height: 14),
+                  _bannerCarousel(),
+                  const SizedBox(height: 14),
+                  _quickRow(t),
+                  const SizedBox(height: 14),
+                  _featureRow(t),
+                  const SizedBox(height: 10),
+                  _continueRow(t),
+                  const SizedBox(height: 16),
+                  _tabsRow(t),
+                  const SizedBox(height: 20),
+                  _gridSection(t),
+                ],
+              ),
             ),
           ),
         ),
@@ -290,58 +306,73 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
   }
 
   Widget _continueRow(ThemeData t) {
-    return SizedBox(
-      height: 170,
-      child: ListView.separated(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
-        scrollDirection: Axis.horizontal,
-        itemCount: _continueItems.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 12),
-        itemBuilder: (_, index) {
-          final item = _continueItems[index];
+    return BlocBuilder<HomeCubit, HomeState>(
+      builder: (context, state) {
+        if (state is ErrorHomeState || _homeCubit.highlightError != null) {
+          return _sectionErrorPlaceholder(height: 80, t: t);
+        }
+
+        final showShimmer = _homeCubit.isFetchingHighlight || (state is LoadingHomeState && (state.page == null || state.page == 1));
+        final highlights = _homeCubit.highlightItems;
+        final items = highlights.isNotEmpty
+        ? highlights.map((e) => _CardItem(title: e.title, subtitle: e.subtitle)).toList()
+        : _continueItems;
           return SizedBox(
-            width: 138,
-            child: Container(
-              clipBehavior: Clip.antiAlias,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.black26, width: 0.6),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFF0F2F6),
-                        borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+            height: 170,
+            child: ListView.separated(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+            scrollDirection: Axis.horizontal,
+            itemCount: showShimmer ? 4 : items.length,
+            separatorBuilder: (_, __) => const SizedBox(width: 12),
+            itemBuilder: (_, index) {
+              if (showShimmer) return _shimmerContinueCard();
+
+              final item = items[index];
+              return SizedBox(
+                width: 138,
+                child: Container(
+                  clipBehavior: Clip.antiAlias,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.black26, width: 0.6),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            color: Color(0xFFF0F2F6),
+                            borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+                          ),
+                          child: const Center(child: Icon(Icons.image, color: Colors.black26)),
+                        ),
                       ),
-                      child: const Center(child: Icon(Icons.image, color: Colors.black26)),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 8, 8, 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          item.title,
-                          style: t.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 8, 8, 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              item.title,
+                              style: t.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+                            ),
+                            Text(
+                              item.subtitle,
+                              style: t.textTheme.labelMedium?.copyWith(color: Colors.black54),
+                            ),
+                          ],
                         ),
-                        Text(
-                          item.subtitle,
-                          style: t.textTheme.labelMedium?.copyWith(color: Colors.black54),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
+                ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 
@@ -382,10 +413,23 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
   Widget _gridSection(ThemeData t) {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
-        if (state is LoadingHomeState && state.page == 1) {
-          return const Padding(
-            padding: EdgeInsets.symmetric(vertical: 24),
-            child: Center(child: CircularProgressIndicator()),
+        if (state is ErrorHomeState || _homeCubit.highlightError != null) {
+          return _sectionErrorPlaceholder(height: 80, t: t);
+        }
+
+        if (state is LoadingHomeState && (state.page == null || state.page == 1)) {
+          return GridView.builder(
+            itemCount: 4,
+            shrinkWrap: true,
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              childAspectRatio: 0.78,
+            ),
+            itemBuilder: (_, __) => _shimmerGridCard(t),
           );
         }
 
@@ -400,7 +444,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
         return Column(
           children: [
             GridView.builder(
-              itemCount: state is LoadingHomeState && state.page == 1 ? 4 : products.length,
+              itemCount: products.length,
               shrinkWrap: true,
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
               physics: const NeverScrollableScrollPhysics(),
@@ -410,9 +454,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
                 mainAxisSpacing: 12,
                 childAspectRatio: 0.78,
               ),
-              itemBuilder: (_, index) => state is LoadingHomeState 
-              ? _shimmerGridCard(t)
-              : _gridCard(t, products[index]),
+              itemBuilder: (_, index) => _gridCard(t, products[index]),
             ),
             if (_homeCubit.isLoadingMore)
               const Padding(
@@ -483,23 +525,114 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
   }
 
   Widget _shimmerGridCard(ThemeData t) {
-    return Shimmer(
-      gradient: LinearGradient(
-        colors: [
-          Color(0xFFBCBCBC),
-          Color(0xFFDDDDDD)
-        ]
-      ),
+    return Shimmer.fromColors(
+      baseColor: const Color.fromARGB(255, 228, 233, 239),
+      highlightColor: const Color(0xFFF7F9FC),
+      period: const Duration(milliseconds: 1400),
+      direction: ShimmerDirection.ltr,
       child: Container(
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: const Color(0xFFE6EAF0), width: 0.6),
         ),
-      ), 
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Container(
+                color: Colors.white,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 8, 8, 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(height: 12, width: double.infinity, color: Colors.white),
+                  const SizedBox(height: 6),
+                  Container(height: 12, width: 90, color: Colors.white),
+                  const SizedBox(height: 6),
+                  Container(height: 10, width: 70, color: Colors.white),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
+  Widget _shimmerContinueCard() {
+    return SizedBox(
+      width: 138,
+      child: Shimmer.fromColors(
+        baseColor: const Color.fromARGB(255, 228, 233, 239),
+        highlightColor: const Color(0xFFF7F9FC),
+        period: const Duration(milliseconds: 1400),
+        direction: ShimmerDirection.ltr,
+        child: Container(
+          clipBehavior: Clip.antiAlias,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: const Color(0xFFE6EAF0), width: 0.6),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Expanded(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 8, 8, 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    _ShimmerLine(height: 12, width: double.infinity),
+                    SizedBox(height: 6),
+                    _ShimmerLine(height: 10, width: 84),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _sectionErrorPlaceholder({required double height, required ThemeData t}) {
+    return LayoutBuilder(
+      builder: (context, c) {
+        return Container(
+          padding: const EdgeInsets.only(bottom: 20),
+          width: c.maxWidth,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                _errorAsset,
+                height: height,
+                fit: BoxFit.fitHeight
+              ),
+              Text(
+                "Opps, Ada gangguan server",
+                style: t.textTheme.titleMedium?.copyWith(color: t.primaryColor),
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
   
 }
 
@@ -551,6 +684,22 @@ class _BannerSlide extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _ShimmerLine extends StatelessWidget {
+  final double height;
+  final double width;
+
+  const _ShimmerLine({required this.height, required this.width});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: height,
+      width: width,
+      color: Colors.white,
     );
   }
 }

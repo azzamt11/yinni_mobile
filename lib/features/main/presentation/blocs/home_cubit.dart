@@ -17,11 +17,14 @@ class HomeCubit extends Cubit<HomeState> {
 
   final HomeRepository _repository;
   final List<ProductData> _products = <ProductData>[];
+  final List<HomeHighlight> _highlights = <HomeHighlight>[];
 
   int _currentPage = 1;
   int _pageSize = 10;
   int? _total;
   bool _isLoadingMore = false;
+  bool _isFetchingHighlight = false;
+  HomeError? _highlightError;
 
   String? _category;
   String? _brand;
@@ -34,6 +37,9 @@ class HomeCubit extends Cubit<HomeState> {
   String? _searchQuery;
 
   bool get isLoadingMore => _isLoadingMore;
+  bool get isFetchingHighlight => _isFetchingHighlight;
+  List<HomeHighlight> get highlightItems => List<HomeHighlight>.unmodifiable(_highlights);
+  HomeError? get highlightError => _highlightError;
   bool get hasMore {
     if (_total == null) return true;
     return _products.length < _total!;
@@ -65,6 +71,7 @@ class HomeCubit extends Cubit<HomeState> {
     _searchQuery = searchQuery;
 
     emit(LoadingHomeState(page: 1));
+    await Future.delayed(const Duration(seconds: 5));
     try {
       final response = await _repository.fetch(
         page: _currentPage,
@@ -166,6 +173,32 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
+  Future<void> fetchHighlight() async {
+    if (_isFetchingHighlight) return;
+
+    _isFetchingHighlight = true;
+    _highlightError = null;
+    try {
+      // TODO(abdul): Replace with real highlights API once endpoint is ready.
+      await Future<void>.delayed(const Duration(milliseconds: 900));
+      _highlights
+        ..clear()
+        ..addAll(const [
+          HomeHighlight(title: "Balik lihat", subtitle: "Liontin Wanita"),
+          HomeHighlight(title: "Terakhir cek", subtitle: "Buku Kesuksesan"),
+          HomeHighlight(title: "Incaranmu", subtitle: "Secretarial Book"),
+          HomeHighlight(title: "Siap dibeli", subtitle: "Buku Bimbingan"),
+        ]);
+    } catch (e) {
+      _highlightError = HomeError(
+        message: e.toString(),
+        isOffline: e.toString().toLowerCase().contains("socket"),
+      );
+    } finally {
+      _isFetchingHighlight = false;
+    }
+  }
+
   Future<void> getById(int id) async {
     emit(LoadingHomeState());
     try {
@@ -203,5 +236,15 @@ class HomeError {
   HomeError({
     required this.message,
     required this.isOffline
+  });
+}
+
+class HomeHighlight {
+  final String title;
+  final String subtitle;
+
+  const HomeHighlight({
+    required this.title,
+    required this.subtitle,
   });
 }
