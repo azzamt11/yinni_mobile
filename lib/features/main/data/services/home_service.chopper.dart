@@ -32,7 +32,7 @@ final class _$HomeService extends HomeService {
     String? sortOrder,
     String? searchQuery,
   }) {
-    final Uri $url = Uri.parse('/v1/home/product/all');
+    final Uri $url = Uri.parse('/v1/products');
     final Map<String, dynamic> $params = <String, dynamic>{
       'page': page,
       'page_size': pageSize,
@@ -59,7 +59,7 @@ final class _$HomeService extends HomeService {
 
   @override
   Future<Response<ProductData>> getById(int? id) {
-    final Uri $url = Uri.parse('/v1/home/product/${id}');
+    final Uri $url = Uri.parse('/v1/product/${id}');
     final Request $request = Request('GET', $url, client.baseUrl);
     return client.send<ProductData, ProductData>($request);
   }

@@ -69,7 +69,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   listener: (_, state) {
                     if (!mounted) return;
                     if (state is LoadedAuthState) {
-                      context.router.replaceAll([const HomeRoute()]);
+                      context.router.replaceAll([const MainRoute()]);
                       return;
                     }
                     if (state is ErrorAuthState) {

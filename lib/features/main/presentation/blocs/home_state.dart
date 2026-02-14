@@ -5,7 +5,9 @@ abstract class HomeState with _$HomeState {
 
   const factory HomeState.initial() = InitialHomeState;
 
-  const factory HomeState.loading() = LoadingHomeState;
+  const factory HomeState.loading({
+    int? page
+  }) = LoadingHomeState;
 
   const factory HomeState.loaded({
     required List<ProductData> products,

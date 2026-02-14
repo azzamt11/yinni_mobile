@@ -3,7 +3,7 @@ import 'package:yinni_mobile/features/initial/presentation/screens/initial_scree
 import 'package:yinni_mobile/core/common/screens/empty_screen.dart';
 import 'package:yinni_mobile/features/auth/presentation/screens/sign_in_screen.dart';
 import 'package:yinni_mobile/features/auth/presentation/screens/sign_up_screen.dart';
-import 'package:yinni_mobile/features/main/presentation/screens/home_screen.dart';
+import 'package:yinni_mobile/features/main/presentation/screens/main_screen.dart';
 
 part 'app_router.gr.dart';
 
@@ -18,8 +18,8 @@ class AppRouter extends RootStackRouter {
       ),
 
       AutoRoute(
-        page: HomeRoute.page,
-        path: '/home',
+        page: MainRoute.page,
+        path: '/main',
       ),
 
       AutoRoute(

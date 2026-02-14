@@ -128,11 +128,11 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<ProductData> products,  ProductData? selectedProduct,  int? total,  int? page,  int? pageSize)?  loaded,TResult Function( HomeError error)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function( int? page)?  loading,TResult Function( List<ProductData> products,  ProductData? selectedProduct,  int? total,  int? page,  int? pageSize)?  loaded,TResult Function( HomeError error)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case InitialHomeState() when initial != null:
 return initial();case LoadingHomeState() when loading != null:
-return loading();case LoadedHomeState() when loaded != null:
+return loading(_that.page);case LoadedHomeState() when loaded != null:
 return loaded(_that.products,_that.selectedProduct,_that.total,_that.page,_that.pageSize);case ErrorHomeState() when error != null:
 return error(_that.error);case _:
   return orElse();
@@ -152,11 +152,11 @@ return error(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<ProductData> products,  ProductData? selectedProduct,  int? total,  int? page,  int? pageSize)  loaded,required TResult Function( HomeError error)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function( int? page)  loading,required TResult Function( List<ProductData> products,  ProductData? selectedProduct,  int? total,  int? page,  int? pageSize)  loaded,required TResult Function( HomeError error)  error,}) {final _that = this;
 switch (_that) {
 case InitialHomeState():
 return initial();case LoadingHomeState():
-return loading();case LoadedHomeState():
+return loading(_that.page);case LoadedHomeState():
 return loaded(_that.products,_that.selectedProduct,_that.total,_that.page,_that.pageSize);case ErrorHomeState():
 return error(_that.error);case _:
   throw StateError('Unexpected subclass');
@@ -175,11 +175,11 @@ return error(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<ProductData> products,  ProductData? selectedProduct,  int? total,  int? page,  int? pageSize)?  loaded,TResult? Function( HomeError error)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function( int? page)?  loading,TResult? Function( List<ProductData> products,  ProductData? selectedProduct,  int? total,  int? page,  int? pageSize)?  loaded,TResult? Function( HomeError error)?  error,}) {final _that = this;
 switch (_that) {
 case InitialHomeState() when initial != null:
 return initial();case LoadingHomeState() when loading != null:
-return loading();case LoadedHomeState() when loaded != null:
+return loading(_that.page);case LoadedHomeState() when loaded != null:
 return loaded(_that.products,_that.selectedProduct,_that.total,_that.page,_that.pageSize);case ErrorHomeState() when error != null:
 return error(_that.error);case _:
   return null;
@@ -225,33 +225,67 @@ String toString() {
 
 
 class LoadingHomeState implements HomeState {
-  const LoadingHomeState();
+  const LoadingHomeState({this.page});
   
 
+ final  int? page;
 
-
+/// Create a copy of HomeState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$LoadingHomeStateCopyWith<LoadingHomeState> get copyWith => _$LoadingHomeStateCopyWithImpl<LoadingHomeState>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadingHomeState);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadingHomeState&&(identical(other.page, page) || other.page == page));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,page);
 
 @override
 String toString() {
-  return 'HomeState.loading()';
+  return 'HomeState.loading(page: $page)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class $LoadingHomeStateCopyWith<$Res> implements $HomeStateCopyWith<$Res> {
+  factory $LoadingHomeStateCopyWith(LoadingHomeState value, $Res Function(LoadingHomeState) _then) = _$LoadingHomeStateCopyWithImpl;
+@useResult
+$Res call({
+ int? page
+});
 
 
+
+
+}
+/// @nodoc
+class _$LoadingHomeStateCopyWithImpl<$Res>
+    implements $LoadingHomeStateCopyWith<$Res> {
+  _$LoadingHomeStateCopyWithImpl(this._self, this._then);
+
+  final LoadingHomeState _self;
+  final $Res Function(LoadingHomeState) _then;
+
+/// Create a copy of HomeState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? page = freezed,}) {
+  return _then(LoadingHomeState(
+page: freezed == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
+as int?,
+  ));
+}
+
+
+}
 
 /// @nodoc
 

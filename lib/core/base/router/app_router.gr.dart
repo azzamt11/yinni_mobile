@@ -27,22 +27,6 @@ class EmptyRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [HomeScreen]
-class HomeRoute extends PageRouteInfo<void> {
-  const HomeRoute({List<PageRouteInfo>? children})
-    : super(HomeRoute.name, initialChildren: children);
-
-  static const String name = 'HomeRoute';
-
-  static PageInfo page = PageInfo(
-    name,
-    builder: (data) {
-      return const HomeScreen();
-    },
-  );
-}
-
-/// generated route for
 /// [InitialScreen]
 class InitialRoute extends PageRouteInfo<void> {
   const InitialRoute({List<PageRouteInfo>? children})
@@ -54,6 +38,22 @@ class InitialRoute extends PageRouteInfo<void> {
     name,
     builder: (data) {
       return const InitialScreen();
+    },
+  );
+}
+
+/// generated route for
+/// [MainScreen]
+class MainRoute extends PageRouteInfo<void> {
+  const MainRoute({List<PageRouteInfo>? children})
+    : super(MainRoute.name, initialChildren: children);
+
+  static const String name = 'MainRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const MainScreen();
     },
   );
 }

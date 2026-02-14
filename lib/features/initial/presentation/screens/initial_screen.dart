@@ -34,10 +34,10 @@ class _InitialScreenState extends State<InitialScreen> with TickerProviderStateM
 
     _progressControllers = List.generate(
       pageCount,
-      (_) => AnimationController(
+      (index) => AnimationController(
         vsync: this,
         duration: progressDuration,
-      ),
+      )..addStatusListener((status) => _onProgressStatus(index, status)),
     );
 
     _drawerController = AnimationController(
@@ -54,7 +54,7 @@ class _InitialScreenState extends State<InitialScreen> with TickerProviderStateM
     if (!mounted) return;
 
     if ((_authUsecase.cachedToken ?? '').isNotEmpty) {
-      context.router.replaceAll([const HomeRoute()]);
+      context.router.replaceAll([const MainRoute()]);
       return;
     }
 
@@ -82,21 +82,23 @@ class _InitialScreenState extends State<InitialScreen> with TickerProviderStateM
       }
     }
 
-    _progressControllers[index].addStatusListener((status) {
-      if (status == AnimationStatus.completed &&
-          index == _currentPage) {
+  }
 
-        if (index < pageCount - 1) {
-          _pageController.nextPage(
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-          );
-        } else if (!_drawerShown) {
-          _drawerShown = true;
-          _drawerController.forward();
-        }
-      }
-    });
+  void _onProgressStatus(int index, AnimationStatus status) {
+    if (status != AnimationStatus.completed || index != _currentPage) return;
+
+    if (index < pageCount - 1) {
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+      return;
+    }
+
+    if (!_drawerShown) {
+      _drawerShown = true;
+      _drawerController.forward();
+    }
   }
 
   void _onPageChanged(int index) {
@@ -150,20 +152,12 @@ class _InitialScreenState extends State<InitialScreen> with TickerProviderStateM
             top: 0,
             left: 0,
             right: 0,
-            child: Column(
-              children: [
-                Container(
-                  height: MediaQuery.of(context).padding.top,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.black26,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                  child: _indicator(),
-                )
-              ],
+            child: SafeArea(
+              bottom: false,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                child: _indicator(),
+              ),
             ),
           ),
           OnboardingDrawer(animation: _drawerController),
@@ -173,39 +167,34 @@ class _InitialScreenState extends State<InitialScreen> with TickerProviderStateM
   }
 
   Widget _indicator() {
-    return Positioned(
-      top: 20,
-      left: 20,
-      right: 20,
-      child: Row(
-        children: List.generate(pageCount, (index) {
-          return Expanded(
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 4),
-              height: 4,
-              decoration: BoxDecoration(
-                color: Colors.black12,
-                borderRadius: BorderRadius.circular(2),
-              ),
-              child: AnimatedBuilder(
-                animation: _progressControllers[index],
-                builder: (context, _) {
-                  return FractionallySizedBox(
-                    alignment: Alignment.centerLeft,
-                    widthFactor: _progressControllers[index].value,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(3),
-                      ),
-                    ),
-                  );
-                },
-              ),
+    return Row(
+      children: List.generate(pageCount, (index) {
+        return Expanded(
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 4),
+            height: 4,
+            decoration: BoxDecoration(
+              color: Colors.black12,
+              borderRadius: BorderRadius.circular(2),
             ),
-          );
-        }),
-      ),
+            child: AnimatedBuilder(
+              animation: _progressControllers[index],
+              builder: (context, _) {
+                return FractionallySizedBox(
+                  alignment: Alignment.centerLeft,
+                  widthFactor: _progressControllers[index].value,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+      }),
     );
   }
 }

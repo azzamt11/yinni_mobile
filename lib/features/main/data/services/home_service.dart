@@ -4,11 +4,11 @@ import 'package:yinni_mobile/features/main/data/models/product_list_api_response
 
 part 'home_service.chopper.dart';
 
-@ChopperApi(baseUrl: '/v1/home')
+@ChopperApi(baseUrl: '/v1')
 abstract class HomeService extends ChopperService {
   static HomeService create([ChopperClient? client]) => _$HomeService(client);
 
-  @Get(path: '/product/all')
+  @Get(path: '/products')
   Future<Response<ProductListApiResponse>> fetch({
     @Query('page') int? page,
     @Query('page_size') int? pageSize,
