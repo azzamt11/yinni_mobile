@@ -26,7 +26,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
   static const String _errorAsset = "assets/features/home/error.svg";
 
   final List<_QuickItem> _quickItems = const [
-    _QuickItem(icon: Icons.account_balance_wallet, label: "Rp 50.000"),
+    _QuickItem(icon: Icons.account_balance_wallet, label: "Rp 0"),
     _QuickItem(icon: Icons.payments, label: "Rp 0"),
     _QuickItem(icon: Icons.confirmation_num, label: "Kupon"),
     _QuickItem(icon: Icons.local_shipping, label: "Dikirim"),
@@ -39,13 +39,6 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
     _FeatureItem(icon: "assets/features/home/discount.svg", label: "Diskon"),
     _FeatureItem(icon: "assets/features/home/paylater.svg", label: "Paylater"),
     _FeatureItem(icon: "assets/features/home/credit_card.svg", label: "Kartu Kredit"),
-  ];
-
-  final List<_CardItem> _continueItems = const [
-    _CardItem(title: "Balik lihat", subtitle: "Liontin Wanita"),
-    _CardItem(title: "Terakhir cek", subtitle: "Buku Kesuksesan"),
-    _CardItem(title: "Incaranmu", subtitle: "Secretarial Book"),
-    _CardItem(title: "Siap dibeli", subtitle: "Buku Bimbingan"),
   ];
 
   @override
@@ -105,30 +98,41 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
           },
           child: RefreshIndicator(
             onRefresh: _bootHomeData,
-            child: SingleChildScrollView(
+            child: CustomScrollView(
               controller: _scrollController,
               physics: const AlwaysScrollableScrollPhysics(
                 parent: ClampingScrollPhysics(),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 10),
-                  _topBar(t),
-                  const SizedBox(height: 14),
-                  _bannerCarousel(),
-                  const SizedBox(height: 14),
-                  _quickRow(t),
-                  const SizedBox(height: 14),
-                  _featureRow(t),
-                  const SizedBox(height: 10),
-                  _continueRow(t),
-                  const SizedBox(height: 16),
-                  _tabsRow(t),
-                  const SizedBox(height: 20),
-                  _gridSection(t),
-                ],
-              ),
+              slivers: [
+                const SliverToBoxAdapter(child: SizedBox(height: 10)),
+                SliverToBoxAdapter(child: _topBar(t)),
+                const SliverToBoxAdapter(child: SizedBox(height: 14)),
+                SliverToBoxAdapter(child: _bannerCarousel()),
+                const SliverToBoxAdapter(child: SizedBox(height: 14)),
+                SliverToBoxAdapter(child: _quickRow(t)),
+                const SliverToBoxAdapter(child: SizedBox(height: 14)),
+                SliverToBoxAdapter(child: _featureRow(t)),
+                const SliverToBoxAdapter(child: SizedBox(height: 10)),
+                SliverToBoxAdapter(child: _continueRow(t)),
+                const SliverToBoxAdapter(child: SizedBox(height: 16)),
+                SliverToBoxAdapter(child: _tabsRow(t)),
+                const SliverToBoxAdapter(child: SizedBox(height: 20)),
+                _gridSectionSliver(t),
+                if (_isPaginating)
+                  const SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.only(bottom: 16),
+                      child: Center(
+                        child: SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      ),
+                    ),
+                  ),
+                const SliverToBoxAdapter(child: SizedBox(height: 16)),
+              ],
             ),
           ),
         ),
@@ -141,13 +145,16 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
     if (!_scrollController.hasClients) return;
 
     final position = _scrollController.position;
-    if (position.pixels < position.maxScrollExtent - 200) return;
+    final reachedBottom = position.atEdge && position.pixels > 0;
+    if (!reachedBottom) return;
 
-    _isPaginating = true;
+    setState(() => _isPaginating = true);
     try {
       await _homeCubit.loadMore();
     } finally {
-      _isPaginating = false;
+      if (mounted) {
+        setState(() => _isPaginating = false);
+      }
     }
   }
 
@@ -156,16 +163,26 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: [
-          const Expanded(
-            child: SizedBox(
-              height: 40,
-              child: AppInputField(
-                hint: "Cari",
-                contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 3),
-                borderRadius: 12,
-                enabledBorderColor: Colors.black,
-                enabledBorderWidth: 1,
-                prefixIcon: Icon(Icons.search, size: 20, color: Colors.black45),
+          Expanded(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Fitur pencarian belum tersedia")),
+                );
+              },
+              child: const IgnorePointer(
+                child: SizedBox(
+                  height: 40,
+                  child: AppInputField(
+                    hint: "Cari",
+                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+                    borderRadius: 12,
+                    enabledBorderColor: Colors.black,
+                    enabledBorderWidth: 1,
+                    prefixIcon: Icon(Icons.search, size: 20, color: Colors.black45),
+                  ),
+                ),
               ),
             )
           ),
@@ -314,12 +331,14 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
 
         final showShimmer = _homeCubit.isFetchingHighlight || (state is LoadingHomeState && (state.page == null || state.page == 1));
         final highlights = _homeCubit.highlightItems;
-        final items = highlights.isNotEmpty
-        ? highlights.map((e) => _CardItem(title: e.title, subtitle: e.subtitle)).toList()
-        : _continueItems;
-          return SizedBox(
-            height: 170,
-            child: ListView.separated(
+        debugPrint("showShimmer = $showShimmer,  _homeCubit.isFetchingHighlight  = ${ _homeCubit.isFetchingHighlight }, (state is LoadingHomeState && (state.page == null || state.page == 1)) = ${(state is LoadingHomeState && (state.page == null || state.page == 1))}");
+        final items = highlights.map((e) => _CardItem(title: e.title, subtitle: e.subtitle)).toList();
+
+        if((items.isEmpty && state is LoadedHomeState)) return SizedBox.shrink();
+
+        return SizedBox(
+          height: 170,
+          child: ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
             scrollDirection: Axis.horizontal,
             itemCount: showShimmer ? 4 : items.length,
@@ -410,74 +429,75 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
     );
   }
 
-  Widget _gridSection(ThemeData t) {
+  Widget _gridSectionSliver(ThemeData t) {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
         if (state is ErrorHomeState || _homeCubit.highlightError != null) {
-          return _sectionErrorPlaceholder(height: 80, t: t);
+          return SliverToBoxAdapter(
+            child: _sectionErrorPlaceholder(height: 80, t: t),
+          );
         }
 
         if (state is LoadingHomeState && (state.page == null || state.page == 1)) {
-          return GridView.builder(
-            itemCount: 4,
-            shrinkWrap: true,
+          return SliverPadding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
-              childAspectRatio: 0.78,
-            ),
-            itemBuilder: (_, __) => _shimmerGridCard(t),
-          );
-        }
-
-        final products = state is LoadedHomeState ? state.products : const <ProductData>[];
-        if (products.isEmpty) {
-          return const Padding(
-            padding: EdgeInsets.symmetric(vertical: 24),
-            child: Center(child: Text("No products")),
-          );
-        }
-
-        return Column(
-          children: [
-            GridView.builder(
-              itemCount: products.length,
-              shrinkWrap: true,
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-              physics: const NeverScrollableScrollPhysics(),
+            sliver: SliverGrid(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
                 childAspectRatio: 0.78,
               ),
-              itemBuilder: (_, index) => _gridCard(t, products[index]),
-            ),
-            if (_homeCubit.isLoadingMore)
-              const Padding(
-                padding: EdgeInsets.only(bottom: 16),
-                child: SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                ),
+              delegate: SliverChildBuilderDelegate(
+                (_, __) => _shimmerGridCard(t),
+                childCount: 4,
               ),
-          ],
+            ),
+          );
+        }
+
+        final products = state is LoadedHomeState
+            ? state.products
+            : _homeCubit.currentProducts;
+        if (products.isEmpty) {
+          return const SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 24),
+              child: Center(child: Text("No products")),
+            ),
+          );
+        }
+
+        return SliverPadding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          sliver: SliverGrid(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              childAspectRatio: 0.78,
+            ),
+            delegate: SliverChildBuilderDelegate(
+              (_, index) => _gridCard(t, products[index]),
+              childCount: products.length,
+            ),
+          ),
         );
       },
     );
   }
 
   Widget _gridCard(ThemeData t, ProductData item) {
+    final String imageUrl = item.primaryImage.isNotEmpty
+        ? item.primaryImage
+        : (item.images.isNotEmpty ? item.images.first : "");
+
     return Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.black26, width: 0.6),
+        border: Border.all(color: Colors.black26, width: 0.7),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -488,7 +508,28 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
                 color: Color(0xFFF0F2F6),
                 borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
               ),
-              child: const Center(child: Icon(Icons.image, color: Colors.black26)),
+              child: imageUrl.isEmpty
+              ? const Center(child: Icon(Icons.image, color: Colors.black26))
+              : ClipRRect(
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                child: Image.network(
+                  imageUrl,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return const Center(
+                      child: SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    );
+                  },
+                  errorBuilder: (_, __, ___) =>
+                    const Center(child: Icon(Icons.broken_image, color: Colors.black26)),
+                ),
+              )
             ),
           ),
           Padding(
@@ -504,7 +545,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  item.sellingPrice,
+                  _dollarToRupiah(item.sellingPrice),
                   style: t.textTheme.labelLarge?.copyWith(
                     color: const Color(0xFFE74C3C),
                     fontWeight: FontWeight.w800,
@@ -632,6 +673,27 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
         );
       },
     );
+  }
+
+  String _dollarToRupiah(String rawPrice) {
+    final cleaned = rawPrice
+        .replaceAll('\$', '')
+        .replaceAll(',', '')
+        .trim();
+    final usd = double.tryParse(cleaned) ?? 0;
+    const exchangeRate = 16000.0;
+    final idr = (usd * exchangeRate).round();
+
+    final chars = idr.toString().split('').reversed.toList();
+    final buffer = StringBuffer();
+    for (var i = 0; i < chars.length; i++) {
+      if (i > 0 && i % 3 == 0) {
+        buffer.write('.');
+      }
+      buffer.write(chars[i]);
+    }
+    final formatted = buffer.toString().split('').reversed.join();
+    return "Rp $formatted";
   }
   
 }

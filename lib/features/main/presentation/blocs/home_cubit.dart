@@ -38,6 +38,7 @@ class HomeCubit extends Cubit<HomeState> {
 
   bool get isLoadingMore => _isLoadingMore;
   bool get isFetchingHighlight => _isFetchingHighlight;
+  List<ProductData> get currentProducts => List<ProductData>.unmodifiable(_products);
   List<HomeHighlight> get highlightItems => List<HomeHighlight>.unmodifiable(_highlights);
   HomeError? get highlightError => _highlightError;
   bool get hasMore {
@@ -124,7 +125,6 @@ class HomeCubit extends Cubit<HomeState> {
     if (state is! LoadedHomeState) return;
 
     _isLoadingMore = true;
-    emit(LoadingHomeState(page: _currentPage + 1));
     try {
       final nextPage = _currentPage + 1;
       final response = await _repository.fetch(
@@ -175,28 +175,8 @@ class HomeCubit extends Cubit<HomeState> {
 
   Future<void> fetchHighlight() async {
     if (_isFetchingHighlight) return;
-
-    _isFetchingHighlight = true;
     _highlightError = null;
-    try {
-      // TODO(abdul): Replace with real highlights API once endpoint is ready.
-      await Future<void>.delayed(const Duration(milliseconds: 900));
-      _highlights
-        ..clear()
-        ..addAll(const [
-          HomeHighlight(title: "Balik lihat", subtitle: "Liontin Wanita"),
-          HomeHighlight(title: "Terakhir cek", subtitle: "Buku Kesuksesan"),
-          HomeHighlight(title: "Incaranmu", subtitle: "Secretarial Book"),
-          HomeHighlight(title: "Siap dibeli", subtitle: "Buku Bimbingan"),
-        ]);
-    } catch (e) {
-      _highlightError = HomeError(
-        message: e.toString(),
-        isOffline: e.toString().toLowerCase().contains("socket"),
-      );
-    } finally {
-      _isFetchingHighlight = false;
-    }
+    //no implementation yet
   }
 
   Future<void> getById(int id) async {
