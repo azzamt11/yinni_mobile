@@ -54,32 +54,35 @@ class _SignUpScreenState extends State<SignUpScreen> {
       value: _authCubit,
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: LayoutBuilder(
-          builder: (context, constraints) {
-            return SafeArea(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: BlocListener<AuthCubit, AuthState>(
-                  listener: (context, state) {
-                    if (!mounted) return;
-                    if (state is LoadedAuthState) {
-                      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
-                        SnackBar(content: Text("Please, sign in again")),
-                      );
-                      context.router.replaceAll([const SignInRoute()]);
-                      return;
-                    }
-                    if (state is ErrorAuthState) {
-                      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
-                        SnackBar(content: Text(state.error?.message ?? "Seomthing went wrong")),
-                      );
-                    }
-                  },
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
+        body: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          behavior: HitTestBehavior.translucent,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return SafeArea(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: BlocListener<AuthCubit, AuthState>(
+                    listener: (context, state) {
+                      if (!mounted) return;
+                      if (state is LoadedAuthState) {
+                        ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+                          SnackBar(content: Text("Please, sign in again")),
+                        );
+                        context.router.replaceAll([const SignInRoute()]);
+                        return;
+                      }
+                      if (state is ErrorAuthState) {
+                        ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+                          SnackBar(content: Text(state.error?.message ?? "Seomthing went wrong")),
+                        );
+                      }
+                    },
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
                         const SizedBox(height: 50),
                         SizedBox(
                           height: max(constraints.maxHeight - 770, 170),
@@ -149,6 +152,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               child: ElevatedButton(
                                 onPressed: isLoading ? null
                                 : () {
+                                  FocusScope.of(context).unfocus();
                                   if (_formKey.currentState!.validate()) {
                                     _formKey.currentState!.save();
                                     context.read<AuthCubit>().signUp(_email, _password ?? _passwordConf, _name);
@@ -196,13 +200,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ],
                         ),
                         const SizedBox(height: 40),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              )
-            );
-          },
+                )
+              );
+            },
+          ),
         ),
       )
     );

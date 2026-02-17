@@ -11,6 +11,7 @@ ThemeData buildTheme() {
     canvasColor: Colors.white,
     appBarTheme: const AppBarTheme(backgroundColor: Colors.white),
     primaryColor: const Color(0xFF765ECE),
+    splashColor: const Color.fromARGB(35, 118, 94, 206),
     cardColor: const Color(0xFFCB6CE6)
   );
 

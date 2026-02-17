@@ -1,10 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:yinni_mobile/core/base/di/dependency_injection.dart';
 import 'package:yinni_mobile/core/base/router/app_router.dart';
 import 'package:yinni_mobile/core/repositories/cache/volume/image_cache_manager.dart';
 import 'package:yinni_mobile/features/auth/domain/usecase/auth_usecase.dart';
-import 'package:yinni_mobile/features/main/presentation/screens/tabs/home_tab_screen.dart';
+import 'package:yinni_mobile/features/main/presentation/screens/tabs/home/home_tab_screen.dart';
 
 @RoutePage()
 class MainScreen extends StatefulWidget {
@@ -32,8 +33,8 @@ class _MainScreenState extends State<MainScreen> {
         children: const [
           HomeTabScreen(),
           _PlaceholderTab(label: "Feed"),
-          _PlaceholderTab(label: "Promo"),
-          _PlaceholderTab(label: "Transaksi"),
+          _PlaceholderTab(label: "Favorite"),
+          _PlaceholderTab(label: "Chart"),
           _PlaceholderTab(label: "Akun"),
         ],
       ),
@@ -47,12 +48,32 @@ class _MainScreenState extends State<MainScreen> {
           unselectedItemColor: Colors.black54,
           selectedLabelStyle: t.textTheme.bodyMedium?.copyWith(fontSize: 12.5),
           unselectedLabelStyle: t.textTheme.bodySmall,
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: "Buat Kamu"),
-            BottomNavigationBarItem(icon: Icon(Icons.play_circle_outline), label: "Feed"),
-            BottomNavigationBarItem(icon: Icon(Icons.local_offer_outlined), label: "Promo"),
-            BottomNavigationBarItem(icon: Icon(Icons.receipt_long), label: "Transaksi"),
-            BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: "Akun"),
+          items: [
+            _navItem(
+              assetPath: "assets/features/home/home.svg",
+              activeAssetPath: "assets/features/home/home-active.svg",
+              label: "Buat Kamu",
+            ),
+            _navItem(
+              assetPath: "assets/features/home/feed.svg",
+              activeAssetPath: "assets/features/home/feed-active.svg",
+              label: "Feed",
+            ),
+            _navItem(
+              assetPath: "assets/features/home/heart.svg",
+              activeAssetPath: "assets/features/home/heart-active.svg",
+              label: "Favorite",
+            ),
+            _navItem(
+              assetPath: "assets/features/home/shopping-cart.svg",
+              activeAssetPath: "assets/features/home/shopping-cart-active.svg",
+              label: "Chart",
+            ),
+            _navItem(
+              assetPath: "assets/features/home/profile.svg",
+              activeAssetPath: "assets/features/home/profile-active.svg",
+              label: "Akun",
+            ),
           ],
         ),
       ),
@@ -87,6 +108,26 @@ class _MainScreenState extends State<MainScreen> {
     } finally {
       _isLoggingOut = false;
     }
+  }
+
+  BottomNavigationBarItem _navItem({
+    required String assetPath,
+    required String activeAssetPath,
+    required String label,
+  }) {
+    return BottomNavigationBarItem(
+      icon: SvgPicture.asset(
+        assetPath,
+        width: 22,
+        height: 22,
+      ),
+      activeIcon: SvgPicture.asset(
+        activeAssetPath,
+        width: 22,
+        height: 22,
+      ),
+      label: label,
+    );
   }
 }
 

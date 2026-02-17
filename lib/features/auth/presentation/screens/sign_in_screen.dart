@@ -60,27 +60,30 @@ class _SignInScreenState extends State<SignInScreen> {
       value: _authCubit,
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: LayoutBuilder(
-          builder: (context, constraints) {
-            return SafeArea(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: BlocListener<AuthCubit, AuthState>(
-                  listener: (_, state) {
-                    if (!mounted) return;
-                    if (state is LoadedAuthState) {
-                      context.router.replaceAll([const MainRoute()]);
-                      return;
-                    }
-                    if (state is ErrorAuthState) {
-                      _showErrorSnackBar(state.error?.message ?? "Something went wrong");
-                    }
-                  },
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
+        body: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          behavior: HitTestBehavior.translucent,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return SafeArea(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: BlocListener<AuthCubit, AuthState>(
+                    listener: (_, state) {
+                      if (!mounted) return;
+                      if (state is LoadedAuthState) {
+                        context.router.replaceAll([const MainRoute()]);
+                        return;
+                      }
+                      if (state is ErrorAuthState) {
+                        _showErrorSnackBar(state.error?.message ?? "Something went wrong");
+                      }
+                    },
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
                         const SizedBox(height: 70),
                         SizedBox(
                           height: max(constraints.maxHeight - 670, 120),
@@ -134,6 +137,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               child: ElevatedButton(
                                 onPressed: isLoading ? null
                                 : () {
+                                  FocusScope.of(context).unfocus();
                                   if (_formKey.currentState!.validate()) {
                                     _formKey.currentState!.save();
                                     context.read<AuthCubit>().signIn(_email, _password);
@@ -184,13 +188,14 @@ class _SignInScreenState extends State<SignInScreen> {
                           ],
                         ),
                         const SizedBox(height: 40),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              )
-            );
-          },
+                )
+              );
+            },
+          ),
         ),
       )
     );
