@@ -23,7 +23,7 @@ class _InitialScreenState extends State<InitialScreen> with TickerProviderStateM
   int _currentPage = 0;
 
   final int pageCount = 3;
-  final Duration progressDuration = const Duration(seconds: 2);
+  final Duration progressDuration = const Duration(seconds: 5);
 
   @override
   void initState() {

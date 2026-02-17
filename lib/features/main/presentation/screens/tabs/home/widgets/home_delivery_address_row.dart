@@ -18,12 +18,12 @@ class HomeDeliveryAddressRow extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
         decoration: BoxDecoration(
-          color: const Color(0xFFEAF7EE),
+          color: t.splashColor,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
           children: [
-            const Icon(Icons.location_on, color: Color(0xFF16A34A), size: 20),
+            Icon(Icons.location_on, color: t.primaryColor, size: 20),
             const SizedBox(width: 8),
             Expanded(
               child: RichText(
