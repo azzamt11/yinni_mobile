@@ -23,7 +23,7 @@ class _InitialScreenState extends State<InitialScreen> with TickerProviderStateM
   int _currentPage = 0;
 
   final int pageCount = 3;
-  final Duration progressDuration = const Duration(seconds: 5);
+  final Duration progressDuration = const Duration(seconds: 2);
 
   @override
   void initState() {
@@ -89,7 +89,7 @@ class _InitialScreenState extends State<InitialScreen> with TickerProviderStateM
 
     if (index < pageCount - 1) {
       _pageController.nextPage(
-        duration: const Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 200),
         curve: Curves.easeInOut,
       );
       return;

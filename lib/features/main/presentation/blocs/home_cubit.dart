@@ -72,7 +72,7 @@ class HomeCubit extends Cubit<HomeState> {
     _searchQuery = searchQuery;
 
     emit(LoadingHomeState(page: 1));
-    await Future.delayed(const Duration(seconds: 5));
+    await Future.delayed(const Duration(seconds: 2));
     try {
       final response = await _repository.fetch(
         page: _currentPage,

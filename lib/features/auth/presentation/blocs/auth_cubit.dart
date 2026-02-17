@@ -19,7 +19,7 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> signIn(email, password) async {
     emit(LoadingAuthState());
-    await Future.delayed(const Duration(seconds: 5));
+    await Future.delayed(const Duration(seconds: 2));
     try {
       final response = await _repository.signIn({
         "email": email,
@@ -50,7 +50,7 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> signUp(email, password, name) async {
     emit(LoadingAuthState());
-    await Future.delayed(const Duration(seconds: 5));
+    await Future.delayed(const Duration(seconds: 2));
     try {
       final response = await _repository.signUp({
         "email": email,

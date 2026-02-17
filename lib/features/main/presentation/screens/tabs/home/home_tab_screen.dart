@@ -74,7 +74,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
       final nextPage = (_bannerIndex + 1) % _bannerCount;
       _bannerController.animateToPage(
         nextPage,
-        duration: const Duration(milliseconds: 320),
+        duration: const Duration(milliseconds: 220),
         curve: Curves.easeInOut,
       );
     });
